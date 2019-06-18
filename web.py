@@ -27,6 +27,17 @@ def note(note_id):
     return render_template("note.html", note=note._asdict(), body=Markup(mistune.markdown(note.body)))
 
 
+@app.route("/edit/<note_id>")
+def edit(note_id):
+    zk.edit(note_id)
+    return ""
+
+@app.route("/archive/<note_id>")
+def archive(note_id):
+    zk.archive(note_id)
+    return ""
+
+
 @app.route("/query/")
 @app.route("/query/<query_string>")
 def query(query_string=''):

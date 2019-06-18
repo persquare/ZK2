@@ -258,6 +258,12 @@ class ZK(object):
             for t in n.tags:
                 tags[t] = tags.setdefault(t, 0) + 1
         return tags
+        
+    def edit(self, note_id):
+        print("EDIT", note_id)    
+
+    def archive(self, note_id):
+        print("ARCHIVE", note_id)    
 
 
 if __name__ == '__main__':
