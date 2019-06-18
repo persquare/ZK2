@@ -39,9 +39,7 @@ def query(query_string=''):
     zk.sort_key = key
     zk.sort_reversed = rev
     notes = zk.filter(query_string.split())
-    # FIXME: Use {% for note in notes %} in template
-    html_notes = [render_template("item.html", **note._asdict()) for note in notes]
-    return str("\n".join(html_notes))  
+    return render_template("item.html", notes=(n._asdict()for n in notes)) 
 
 @app.route("/search/") 
 @app.route("/search/<query_string>") 
