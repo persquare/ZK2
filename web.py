@@ -19,8 +19,8 @@ def tags():
     tags = sorted([t for t,c in tagdata.items() if c > 3])
     return render_template("tags.html", tags=tags)
 
-   
-@app.route("/note/<note_id>") 
+
+@app.route("/note/<note_id>")
 def note(note_id):
     note = zk.note(note_id)
     res = {
@@ -28,26 +28,20 @@ def note(note_id):
         'body': mistune.markdown(note.body)
     }
     return json.dumps(res)
-    
 
-# FIXME: Rename to filter
-@app.route("/query/") 
-@app.route("/query/<query_string>") 
+
+@app.route("/query/")
+@app.route("/query/<query_string>")
 def query(query_string=''):
     key = request.args.get('key')
     rev = request.args.get('reversed') == 'true'
     zk.sort_key = key
     zk.sort_reversed = rev
-    notes = zk.filter(query_string.split())
-    return render_template("item.html", notes=(n._asdict()for n in notes)) 
-
-@app.route("/search/") 
-@app.route("/search/<query_string>") 
-def search(query_string=''):
-    notes = zk.search(query_string.strip())
-    # FIXME: Use {% for note in notes %} in template
-    html_notes = [render_template("item.html", **note._asdict()) for note in notes]
-    return str("\n".join(html_notes))  
+    if query_string.startswith('"'):
+        notes = zk.search(query_string.strip('"'))
+    else:
+        notes = zk.filter(query_string.split())
+    return render_template("item.html", notes=(n._asdict()for n in notes))
 
 
 if __name__ == '__main__':

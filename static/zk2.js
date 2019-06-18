@@ -13,12 +13,7 @@ function reset() {
 function filter() {
     var searchbox = document.getElementById('search');
     var expr = searchbox.value;
-    if (expr.startsWith('"')) {
-        expr = expr.replace(/(^\s*")|("\s*$)/g, '');
-        search_notes(expr);
-    } else {
-        filter_notes(expr);
-    }
+    filter_notes(expr);
 }
 
 function drag(event) {
@@ -36,10 +31,6 @@ function drag(event) {
 // ======================
 function filter_notes(expr) {
     get_request("query/"+expr+options(), update_list);
-}
-
-function search_notes(expr, sort_key, reversed) {
-    get_request("search/"+expr+options(), update_list);
 }
 
 function options() {
