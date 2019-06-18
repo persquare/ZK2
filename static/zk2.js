@@ -44,7 +44,6 @@ function set_tags() {
 }
 
 function show_top_note() {
-    console.log('show_top_note');
     var list_box = document.getElementById("list_box");
     var first = list_box.children[0];
     if (first !== undefined) {
@@ -57,7 +56,6 @@ function show_note(note_id) {
     get_request("note/"+note_id, update_note);
     highlight_item(note_id);
 }
-
 
 function highlight_item(note_id) {
     var list_box = document.getElementById('list_box');
@@ -74,7 +72,6 @@ function highlight_item(note_id) {
 // = Callbacks =
 // =============
 function update_list(data) {
-    console.log('update_list');
     var list_box = document.getElementById("list_box");
     list_box.innerHTML = data;
     show_top_note();
