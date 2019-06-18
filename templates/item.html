@@ -1,0 +1,9 @@
+<a href="#" class="item" onclick="show_note({{id}}); return false;" id="{{id}}" style="background-color: inherit; display: block;">
+<div class="anfang" draggable="true" ondragstart="drag(event)">
+    {{title}}
+</div>
+<div class="tags">
+    {% for tag in tags %}
+    <span class="tag">{{tag}}</span> 
+    {% endfor %}
+</div></a>
