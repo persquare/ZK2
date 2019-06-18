@@ -68,6 +68,21 @@ function highlight_item(note_id) {
     }
 }
 
+function mangle_links(element) {
+  var links = element.getElementsByTagName('a');
+  var re_http = /^https?:\/\//;
+  var re_zk = /^zk:\/\/(\d+)/;
+  for (var i = 0; i < links.length; i++) {
+    var url = links[i].href;
+    var zk_match = re_zk.exec(url);
+    if (zk_match != null) {
+        links[i].onclick = function () {show_note(zk_match[1]); return false;};
+    } else if (re_http.test(url)) {
+        links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
+    }
+  }
+}
+
 // =============
 // = Callbacks =
 // =============
@@ -85,7 +100,9 @@ function update_tag_box(data) {
 function update_note(data) {
     var note = JSON.parse(data);
     document.getElementById("note_header").innerHTML = note.header;
-    document.getElementById("note_body").innerHTML = note.body;
+    var note_body = document.getElementById("note_body");
+    note_body.innerHTML = note.body;
+    mangle_links(note_body);
 }
 
 function filter_by_tag(tag) {
