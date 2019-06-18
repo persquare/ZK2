@@ -1,0 +1,18 @@
+<div class="header">
+    <p>
+        <a href="edit?{{note.id}}">
+            <img src="static/if_note_370077.svg" alt="Edit" width="32" height="32">
+        </a>
+        <a href="archive?{{note.id}}">
+        <img src="static/if_delete_370086.svg" alt="Archive" width="32" height="32">
+    </a>
+    </p>
+    <pre class="header" id="note_header">
+Date: {{note.date}}  {% if note.date != note.modified %}Modified: {{note.modified}}{% endif %}
+Tags: {{note.tags_string}}
+Title: {{note.title}}    
+</pre><!--Id: {{note.id}} --> <!-- Author: {{note.author}} -->
+</div>
+<div id="note_body">
+{{body}}
+</div>

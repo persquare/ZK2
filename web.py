@@ -1,7 +1,7 @@
 import json
 
 import mistune
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 
 import zk2
 
@@ -23,11 +23,8 @@ def tags():
 @app.route("/note/<note_id>")
 def note(note_id):
     note = zk.note(note_id)
-    res = {
-        'header': note.header,
-        'body': mistune.markdown(note.body)
-    }
-    return json.dumps(res)
+    body = mistune.markdown(note.body)
+    return render_template("note.html", note=note._asdict(), body=Markup(mistune.markdown(note.body)))
 
 
 @app.route("/query/")

@@ -8,9 +8,7 @@
         <!--base href="file:///Users/per/Source/Zettelkasten.tmbundle/Support/lib/"-->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='zk2.css') }}">
         <script type="text/javascript" src="{{ url_for('static', filename='zk2.js') }}" ></script>
-    </head>
-    
-    <!-- <body onload="reset_list();document.getElementById('search').focus();add_tag_click()"> -->
+    </head>    
     <body onload="reset()">
         <!-- =========== -->
         <!-- = TAG BOX = -->
@@ -24,7 +22,6 @@
           <legend>Choose your interests</legend> -->
         <div id="filter_box">
             <div>
-                <!-- Filter notes: <input type="search" id="search" onkeyup="filter_results(this)" onsubmit="filter_results(this)" oninput="filter_results(this)"> <span id="results"></span> -->
                 Filter notes: <input type="search" id="search" oninput="filter()" onsubmit="filter()">
                 <span id="results"> </span>
             </div>
@@ -35,40 +32,16 @@
             <input id="title_option" type="radio" name="sort_option" value="title" onchange="filter();">Title 
             <input id="reversed_option" type="checkbox" name="reversed_option" value="reversed" onchange="filter();" checked>Reversed 
         </div>
-        <!-- 
-        <div>
-            <span class="sort" onclick="date_sort();">date</span>
-            <span class="sort" onclick="title_sort();">title</span>
-        </div> 
-        -->
         <!-- ============ -->
         <!-- = LIST BOX = -->
         <!-- ============ -->
         <div id="list_box">
-            <!-- <a href="#" class="item" onclick="display_note(190613100427); return false;" id="190613100427" style="background-color: inherit; display: block;">
-            <div class="anfang" draggable="true" ondragstart="drag(event)">
-                Multiple partial matches in lists
-            </div>
-            <div class="tags">
-                <span>python, programming, zk</span>
-            </div></a>  -->
         </div>
         <!-- =============== -->
         <!-- = PREVIEW BOX = -->
         <!-- =============== -->
         <div id="preview_box">
             <div id="preview_pane" class="zk">
-                <div class="header">
-                    <p>
-                        <!-- <a href="txmt://open?url=file:///Users/per/Dropbox/Notes/zk161203151418.md">
-                            <img src="if_note_370077.svg" alt="Edit" width="32" height="32">
-                        </a>
-                        <img src="if_delete_370086.svg" alt="NewDelete" width="32" height="32" onclick="delete_note('' + /Users/per/Dropbox/Notes/zk161203151418.md + '')"> -->
-                    </p>
-                    <pre class="header" id="note_header"></pre>
-                </div>
-                <div id="note_body">
-                </div>
             </div>
         </div>
     </body>

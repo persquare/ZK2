@@ -289,17 +289,18 @@ if __name__ == '__main__':
     t1 = datetime.now()
     t = (t1-t0).total_seconds()
     print("Filtered {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
-    t0 = datetime.now()
-    result = zk.search(r'textmate')
-    t1 = datetime.now()
-    t = (t1-t0).total_seconds()
-    print("Searched {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
-    for n in result:
-        print(n.date, n.modified, n.title, n.tags_string)
-    # print(json.dumps(zk.tags(), indent=4))
-    print("{}\n\n{}".format(result[0].header, result[0].body))
-    # n = zk.note('190613100427')
-    # print(n)
+    # t0 = datetime.now()
+    # result = zk.search(r'textmate')
+    # t1 = datetime.now()
+    # t = (t1-t0).total_seconds()
+    # print("Searched {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
+    # for n in result:
+    #     print(n.date, n.modified, n.title, n.tags_string)
+    # # print(json.dumps(zk.tags(), indent=4))
+    # print("{}\n\n{}".format(result[0].header, result[0].body))
+    n = zk.note('190618132530')
+    print(n.body)
+    
 
 
 

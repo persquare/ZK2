@@ -97,12 +97,9 @@ function update_tag_box(data) {
     document.getElementById("tag_box").innerHTML = data;
 }
 
-function update_note(data) {
-    var note = JSON.parse(data);
-    document.getElementById("note_header").innerHTML = note.header;
-    var note_body = document.getElementById("note_body");
-    note_body.innerHTML = note.body;
-    mangle_links(note_body);
+function update_note(note) {
+    document.getElementById("preview_pane").innerHTML = note;
+    mangle_links(document.getElementById("note_body"));
 }
 
 function filter_by_tag(tag) {
