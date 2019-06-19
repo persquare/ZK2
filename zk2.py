@@ -229,13 +229,16 @@ class ZK(object):
         return notes
 
     # Partial match, see https://stackoverflow.com/a/14389112
+    # FIXME: Combined query expression covering all kinds
     def filter(self, query):
         # Argument query is list of (possibly partial) tags
         # Empty list matches everything
         r = []
         for n in self._notes:
+            if (ARCHIVED in n.tags and ARCHIVED not in query):
+                continue
             for q in query:
-                if any(t for t in n.tags if t.startswith(q) and (ARCHIVED not in n.tags or ARCHIVED in query)):
+                if any(t for t in n.tags if t.startswith(q)):
                     continue
                 else:
                     break
