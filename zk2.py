@@ -18,11 +18,10 @@
 # 1. zkXXXXXX.md (compatible with any editor)
 # 2. XXXXXX.zk (can have special grammar with markdown injection)
 
-
-import sys
 import os
 import re
-import codecs
+import subprocess
+import shutil
 from datetime import datetime
 from collections import namedtuple
 
@@ -43,12 +42,18 @@ ANFANG_REGEX = r'^((?:\S+\s+){1,6})'
 re_header_entry = re.compile(HEADER_LINE_REGEX)
 re_anfang = re.compile(ANFANG_REGEX)
 
+
+# FIXME: 
+# - Add file path
+# - Remove unnecessary properties
+
 class ZKNote(object):
     """docstring for ZKNote"""
     def __init__(self, filepath):
         super(ZKNote, self).__init__()
         with open(filepath, 'r', encoding='utf-8') as fd:
             self.parse(fd)
+        self.filepath = filepath
 
     def __str__(self):
         return ' : '.join((self.date_string, self.title, self.tags_string))
@@ -146,7 +151,8 @@ Note = namedtuple('Note', [
     'tags',
     'tags_string',
     'body',
-    'header'
+    'header',
+    'filepath'
 ])
 
 #
@@ -166,7 +172,8 @@ def create_note(filepath):
         tags=n.tags,
         tags_string=n.tags_string,
         body=n.body,
-        header=n.header)
+        header=n.header,
+        filepath=n.filepath)
     return note
 
 
@@ -187,12 +194,19 @@ class ZK(object):
         TITLE: lambda x: x.title,
     }
 
-    def __init__(self, zkdir):
+    # FIXME: To config file
+    config = {
+        'notesdir': '~/Dropbox/Notes',
+        'editor': 'mate',
+    }
+    
+    def __init__(self):
         super(ZK, self).__init__()
-        self.zkdir = os.path.expanduser(zkdir)
+        self.zkdir = os.path.expanduser(self.config['notesdir'])
         self._sort_key = DATE
         self._sort_fn = self.sort_options[self._sort_key]
         self.rebuild_db()
+    
 
     def rebuild_db(self):
         self._notes = []
@@ -251,6 +265,11 @@ class ZK(object):
              if n.id == note_id:
                  return n
 
+    def filepath(self, note_id):
+        note = self.note(note_id)
+        if note:
+            return note.filepath
+        
     def tags(self):
         # Return all tags and corresponding occurence count
         tags = {}
@@ -260,9 +279,16 @@ class ZK(object):
         return tags
         
     def edit(self, note_id):
-        print("EDIT", note_id)    
+        filepath = self.filepath(note_id)
+        editor_cmd = self.config['editor']
+        _ = subprocess.call(editor_cmd + " " + filepath, shell=True)
 
     def archive(self, note_id):
+        # FIXME: Use tag 'archived' with special handling
+        #        Need to be able to read/write header properly
+        
+        # filepath = self.filepath(note_id)
+        # shutil.move(filepath, filepath+".deleted")
         print("ARCHIVE", note_id)    
 
 
@@ -284,7 +310,7 @@ if __name__ == '__main__':
 
 
     t0 = datetime.now()
-    zk = ZK('~/Dropbox/Notes')
+    zk = ZK()
     t1 = datetime.now()
     t = (t1-t0).total_seconds()
     print("Initialized {} notes in {:.1f} ms".format(len(zk._notes), t*1000))

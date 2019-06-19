@@ -7,7 +7,7 @@ import zk2
 
 app = Flask(__name__)
 
-zk = zk2.ZK('~/Dropbox/Notes')
+zk = zk2.ZK()
 
 @app.route("/")
 def index():
@@ -30,19 +30,19 @@ def note(note_id):
 @app.route("/edit/<note_id>")
 def edit(note_id):
     zk.edit(note_id)
-    return ""
+    return ('', 204)
 
 @app.route("/archive/<note_id>")
 def archive(note_id):
     zk.archive(note_id)
-    return ""
+    return ('', 204)
 
 
 @app.route("/query/")
 @app.route("/query/<query_string>")
 def query(query_string=''):
-    key = request.args.get('key')
-    rev = request.args.get('reversed') == 'true'
+    key = request.args.get('key', 'date')
+    rev = request.args.get('reversed', 'true') == 'true'
     zk.sort_key = key
     zk.sort_reversed = rev
     if query_string.startswith('"'):
