@@ -32,6 +32,7 @@ ID = 'id'
 MODIFIED = 'modified'
 TAGS = 'tags'
 TITLE = 'title'
+ARCHIVED = 'archived'
 
 ORDER = [DATE, MODIFIED, ID, AUTHOR, TAGS, TITLE]
 
@@ -246,7 +247,7 @@ class ZK(object):
         r = []
         for n in self._notes:
             for q in query:
-                if any(t for t in n.tags if t.startswith(q)):
+                if any(t for t in n.tags if t.startswith(q) and (ARCHIVED not in n.tags or ARCHIVED in query)):
                     continue
                 else:
                     break
@@ -257,7 +258,7 @@ class ZK(object):
     def search(self, query):
         # Body text search using regexp
         query_re = re.compile(query, re.IGNORECASE)
-        r = [n for n in self._notes if query_re.search(n.body)]
+        r = [n for n in self._notes if (ARCHIVED not in n.tags) and query_re.search(n.body)]
         return sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
 
     def note(self, note_id):
