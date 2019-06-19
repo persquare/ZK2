@@ -1,0 +1,29 @@
+ZK2: 
++ edit button
+  + editor linkback
++ archived button
+  - archived handling
+- remove redundant data in ZKNote
+- reload db
+- watch dir for changes (pip watchdog)
+- arrow key navigation
+- Tag cloud 
+- CSS
+  - styling
+  + scrolling itemlist
+- date search
+- show search stats
+- Manipulation API
+  - new note
+  - new linked note
+  - split note
+  - merge note
+
+tmBundle:
+  - browse notes
+  - related notes (from selected text)
+  - interface manipulation API  
+  - grammar
+    - styled header
+    - include markdown
+  - tag list in environment?
