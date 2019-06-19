@@ -30,7 +30,7 @@ def note(note_id):
 @app.route("/edit/<note_id>")
 def edit(note_id):
     zk.edit(note_id)
-    return ('', 202)
+    return ('', 204)
 
 @app.route("/archive/<note_id>")
 def archive(note_id):

@@ -26,6 +26,7 @@ function drag(event) {
     event.dataTransfer.setData("text", content);
 }
 
+
 // ======================
 // = Core functionality =
 // ======================
@@ -83,6 +84,13 @@ function mangle_links(element) {
   }
 }
 
+function edit(note_id) {
+    get_request("edit/"+note_id, function(){});
+}
+
+function archive(note_id) {
+    get_request("archive/"+note_id, function(){});
+}
 // =============
 // = Callbacks =
 // =============

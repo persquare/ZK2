@@ -1,11 +1,7 @@
 <div class="header">
     <p>
-        <a href="edit/{{note.id}}">
-            <img src="static/if_note_370077.svg" alt="Edit" width="32" height="32">
-        </a>
-        <a href="archive/{{note.id}}">
-        <img src="static/if_delete_370086.svg" alt="Archive" width="32" height="32">
-    </a>
+        <img src="static/if_note_370077.svg" alt="Edit" width="32" height="32" onclick="edit('{{note.id}}')">
+        <img src="static/if_delete_370086.svg" alt="Archive" width="32" height="32" onclick="archive('{{note.id}}')">
     </p>
     <pre class="header" id="note_header">
 Date: {{note.date}}  {% if note.date != note.modified %}Modified: {{note.modified}}{% endif %}
