@@ -197,7 +197,7 @@ class ZK(object):
     # FIXME: To config file
     config = {
         'notesdir': '~/Dropbox/Notes',
-        'editor': 'mate',
+        'editor': 'open txmt://open?url=file://{}',
     }
     
     def __init__(self):
@@ -280,8 +280,9 @@ class ZK(object):
         
     def edit(self, note_id):
         filepath = self.filepath(note_id)
-        editor_cmd = self.config['editor']
-        _ = subprocess.call(editor_cmd + " " + filepath, shell=True)
+        editor_cmd = self.config['editor'].format(filepath)
+        # os.environ['ZK_TAGS']=",".join(self.tags().keys())
+        subprocess.call(editor_cmd, shell=True)
 
     def archive(self, note_id):
         # FIXME: Use tag 'archived' with special handling
