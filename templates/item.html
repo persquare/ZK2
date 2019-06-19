@@ -1,5 +1,5 @@
 {% for note in notes %}
-<a href="#" class="item" onclick="show_note({{note.id}}); return false;" id="{{note.id}}" style="background-color: inherit; display: block;">
+<a href="#" class="item" onclick="show_note({{note.id}}); return false;" id="{{note.id}}">
 <div class="anfang" draggable="true" ondragstart="drag(event)">
     {{note.title}}
 </div>

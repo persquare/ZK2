@@ -4,7 +4,13 @@ div#list_box
 {
 	float: left;
 	width: 200px;
-/*	width: 40%;
+	overflow-y: auto;
+	overflow-x: hidden;
+    height: 90%;
+/*    top: 20px;
+    bottom:10px;
+*/
+    /*	width: 40%;
 	overflow: auto;
 	position: absolute;
 	top: 40px;
@@ -30,6 +36,7 @@ div#tag_box {
 	clear: both;
 	padding: 4px;
 }
+
 div#filter_box 
 {
 	height: 30px;
@@ -45,11 +52,12 @@ div#filter_box
 
 /* Styling */
 
-
-body {
-	background: #fefefe;
-	color: #080808;
-	font: 12px "Trebuchet MS", Helvetica, sans-serif;
+html, body {
+    height: 100%;
+    margin: 0;
+    background: #fefefe;
+    color: #080808;
+    font: 12px "Trebuchet MS", Helvetica, sans-serif;
 }
 
 .zk code, pre {
@@ -116,6 +124,7 @@ a {
 }
 	
 a.item {
+    background-color: inherit;
 	display: block;
 	padding: 4px;
 	/*height: 24px;*/
