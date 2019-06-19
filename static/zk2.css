@@ -7,8 +7,8 @@ div#list_box
 	overflow-y: auto;
 	overflow-x: hidden;
     height: 90%;
-/*    top: 20px;
-    bottom:10px;
+/*    top: 90px;
+    bottom:0px;
 */
     /*	width: 40%;
 	overflow: auto;
@@ -35,11 +35,12 @@ div#preview_pane {
 div#tag_box {
 	clear: both;
 	padding: 4px;
+    height:36px;
 }
 
 div#filter_box 
 {
-	height: 30px;
+	height: 54px;
 	line-height: 30px;
 	vertical-align: middle;
 	/* border-bottom: 1px solid #999; */

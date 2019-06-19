@@ -18,19 +18,16 @@
         <!-- ============== -->
         <!-- = FILTER BOX = -->
         <!-- ============== -->
-        <!-- <fieldset>
-          <legend>Choose your interests</legend> -->
         <div id="filter_box">
-            <div>
+            <fieldset>
                 Filter notes: <input type="search" id="search" oninput="filter()" onsubmit="filter()">
-                <span id="results"> </span>
-            </div>
-        </div>
-        <div id="option_box">Sort order: 
-            <input id="date_option" type="radio" name="sort_option" value="date" onchange="filter();" checked>Date 
-            <input id="modified_option" type="radio" name="sort_option" value="modified" onchange="filter();">Modified 
-            <input id="title_option" type="radio" name="sort_option" value="title" onchange="filter();">Title 
-            <input id="reversed_option" type="checkbox" name="reversed_option" value="reversed" onchange="filter();" checked>Reversed 
+                <!-- <span id="results"> </span> -->
+                Sort order: 
+                <input id="date_option" type="radio" name="sort_option" value="date" onchange="filter();" checked>Date 
+                <input id="modified_option" type="radio" name="sort_option" value="modified" onchange="filter();">Modified 
+                <input id="title_option" type="radio" name="sort_option" value="title" onchange="filter();">Title 
+                <input id="reversed_option" type="checkbox" name="reversed_option" value="reversed" onchange="filter();" checked>Reversed 
+            </fieldset>    
         </div>
         <!-- ============ -->
         <!-- = LIST BOX = -->
