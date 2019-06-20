@@ -20,6 +20,7 @@
 
 import os
 import re
+import pwd
 import subprocess
 import shutil
 from datetime import datetime
@@ -34,7 +35,10 @@ TAGS = 'tags'
 TITLE = 'title'
 ARCHIVED = 'archived'
 
-ORDER = [DATE, MODIFIED, ID, AUTHOR, TAGS, TITLE]
+HEADER_KEYS = [DATE, MODIFIED, ID, AUTHOR, TAGS, TITLE]
+
+BODY = 'body'
+ALL_KEYS = HEADER_KEYS + [BODY]
 
 
 HEADER_LINE_REGEX = r'^([a-zA-Z][a-zA-Z0-9_]*):\s*(.*)\s*'
@@ -44,115 +48,89 @@ re_header_entry = re.compile(HEADER_LINE_REGEX)
 re_anfang = re.compile(ANFANG_REGEX)
 
 
-# FIXME: 
-# - Add file path
-# - Remove unnecessary properties
-
 class ZKNote(object):
     """docstring for ZKNote"""
     def __init__(self, filepath):
         super(ZKNote, self).__init__()
-        with open(filepath, 'r', encoding='utf-8') as fd:
-            self.parse(fd)
         self.filepath = filepath
-
-    def __str__(self):
-        return ' : '.join((self.date_string, self.title, self.tags_string))
-
-    def set_header(self, header):
-        tag_str = header.get(TAGS, '')
-        tags = sorted([t.strip(' ,') for t in tag_str.split()])
-        header[TAGS] = tags
-        self._header = header
-
-    @property
-    def id(self):
-        return self._header[ID]
-
-    @property
-    def date_string(self):
-        return self._header.get(DATE, '')
-
-    @property
-    def date(self):
-        try:
-            return datetime.fromisoformat(self.date_string)
-        except:
-            return datetime.min
-
-    @property
-    def modified_string(self):
-        return self._header.get(MODIFIED, '')
-
-    @property
-    def modified(self):
-        try:
-            return datetime.fromisoformat(self.modified_string)
-        except:
-            return self.date
-
-    @property
-    def author(self):
-        return self._header.get(AUTHOR, 'Anonymous')
-
-    @property
-    def title(self):
-        return self._header.get(TITLE, '')
-
-    @property
-    def tags(self):
-        return self._header.get(TAGS, [])
-
-    @property
-    def tags_string(self):
-        return ', '.join(self.tags)
-
-    @property
-    def body(self):
-        return self._body
-
-    @property
-    def header(self):
-        entries = {key.capitalize(): self._header[key] for key in ORDER if key in self._header}
-        if TAGS in self._header:
-            entries[TAGS.capitalize()] = self.tags_string
-        entries = ["{}: {}".format(k, v) for k, v in entries.items()]
-        return '\n'.join(entries)
-
-
+        self.data = {}
+        self.read()
+    
+    def __getattr__(self, name):
+        if name not in ALL_KEYS:
+            raise AttributeError("ZKNote has no attribute '{}'".format(name))  
+        return self.data[name]
+    
+    def _asdict(self):
+        return self.data
+        
+    def read(self):
+        with open(self.filepath, 'r', encoding='utf-8') as fd:
+            self.parse(fd)
+        
+    def write(self):
+        pass
+    
     def parse(self, file):
-        self.set_header(self.parse_header(file))
-        self._body = file.read()
-        match = re_anfang.match(self._body)
-        if match:
-            self._header.setdefault(TITLE, match.group(1))
-
+        self.parse_header(file)
+        self.parse_body(file)
+        self.validate()
+    
+    def validate(self):
+        self.data.setdefault(DATE, datetime.now())
+        self.data.setdefault(ID, self.data[DATE].strftime("%y%m%d%H%M%S"))
+        self.data.setdefault(MODIFIED, self.data[DATE])
+        self.data.setdefault(TAGS, ['untagged'])
+        self.data.setdefault(AUTHOR, pwd.getpwuid(os.getuid())[4])
+        if not self.data.get(TITLE):
+            match = re_anfang.match(self.data[BODY])
+            self.data[TITLE] = match.group(1) if match else ''
+    
+    def parse_body(self, file):
+        self.data[BODY] = file.read()
 
     def parse_header(self, file):
-        header = {}
-        for line in file:
+        end_of_header = ""
+        line = file.readline().strip()
+        if line == "---":
+            end_of_header = "---"
+            line = file.readline()
+        
+        while True:
             line = line.strip()
-            if not line:
-                return header
+            if line == end_of_header:
+                break
             match = re_header_entry.match(line)
             if match:
-                header[match.group(1).lower()] = match.group(2)
+                self.parse_entry(key=match.group(1), value=match.group(2))
+            line = file.readline()
+        
+    def parse_entry(self, key, value):
+        key = key.lower()
+        if key not in HEADER_KEYS:
+            return
+        if key in [DATE, MODIFIED]:
+            self.data[key] = datetime.fromisoformat(value)
+            return
+        if key == TAGS:
+            tagset = set(t.strip(' ,') for t in value.split())
+            self.data[key] = list(tagset)
+            return
+        self.data[key] = value
+
+
 
 #
 # Using a namedtuple instead of a class speeds up filtering by a 2x factor
 #
 Note = namedtuple('Note', [
     'id',
-    'date_string',
     'date',
-    'modified_string',
     'modified',
     'author',
     'title',
     'tags',
-    'tags_string',
     'body',
-    'header',
     'filepath'
 ])
 
@@ -164,16 +142,12 @@ def create_note(filepath):
     n = ZKNote(filepath)
     note = Note(
         id=n.id,
-        date_string=n.date_string,
         date=n.date,
-        modified_string=n.modified_string,
         modified=n.modified,
         author=n.author,
         title=n.title,
         tags=n.tags,
-        tags_string=n.tags_string,
         body=n.body,
-        header=n.header,
         filepath=n.filepath)
     return note
 
@@ -181,7 +155,8 @@ def create_note(filepath):
 #
 # The note_factory used by the ZK class hides the actual implementation (object/tuple)
 #
-note_factory = create_note
+note_factory = ZKNote
+# note_factory = create_note
 
 #
 # ZK class to query note collection
@@ -213,7 +188,6 @@ class ZK(object):
         self._notes = []
         self.load_notes(self.zkdir)
         self.sort_reversed = True
-        self.current_id = self.filter([])[0].id
 
     @property
     def sort_key(self):
@@ -253,18 +227,20 @@ class ZK(object):
                     break
             else:
                 r.append(n)
-        return sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        return [n._asdict() for n in r]
 
     def search(self, query):
         # Body text search using regexp
         query_re = re.compile(query, re.IGNORECASE)
         r = [n for n in self._notes if (ARCHIVED not in n.tags) and query_re.search(n.body)]
-        return sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        return [n._asdict() for n in r]
 
     def note(self, note_id):
         for n in self._notes:
              if n.id == note_id:
-                 return n
+                 return n._asdict()
 
     def filepath(self, note_id):
         note = self.note(note_id)
@@ -319,7 +295,7 @@ if __name__ == '__main__':
     zk.sort_reversed = True
     zk.sort_key = 'date'
     t0 = datetime.now()
-    result = zk.filter([])
+    result = zk.filter(['zk', 'work', 'yadda'])
     t1 = datetime.now()
     t = (t1-t0).total_seconds()
     print("Filtered {} notes in {:.1f} ms".format(len(zk._notes), t*1000))

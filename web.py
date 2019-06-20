@@ -23,8 +23,7 @@ def tags():
 @app.route("/note/<note_id>")
 def note(note_id):
     note = zk.note(note_id)
-    body = mistune.markdown(note.body)
-    return render_template("note.html", note=note._asdict(), body=Markup(mistune.markdown(note.body)))
+    return render_template("note.html", note=note, body=Markup(mistune.markdown(note['body'])))
 
 
 @app.route("/edit/<note_id>")
@@ -49,7 +48,7 @@ def query(query_string=''):
         notes = zk.search(query_string.strip('"'))
     else:
         notes = zk.filter(query_string.split())
-    return render_template("item.html", notes=(n._asdict()for n in notes))
+    return render_template("item.html", notes=notes)
 
 
 if __name__ == '__main__':
