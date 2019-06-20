@@ -180,15 +180,17 @@ class ZK(object):
         super(ZK, self).__init__()
         self.zkdir = os.path.expanduser(self.config['notesdir'])
         self._sort_key = DATE
+        # FIXME: Use transient sort_key and sort_reversed
         self._sort_fn = self.sort_options[self._sort_key]
+        self.sort_reversed = True
         self.rebuild_db()
     
 
     def rebuild_db(self):
         self._notes = []
         self.load_notes(self.zkdir)
-        self.sort_reversed = True
-
+    
+    
     @property
     def sort_key(self):
         return self._sort_key
@@ -213,6 +215,18 @@ class ZK(object):
 
     def load_notes(self, zkdir):
         self._notes = [note_factory(note) for note in self.all_notes(zkdir)]
+
+    #
+    # FIXME: Use generic query_string and combine filter/search/sort into same method
+    #
+    def query(self, query_string, sort_key=DATE, reverse=True):
+        self.sort_key = sort_key
+        self.sort_reversed = reverse
+        if query_string.startswith('"'):
+            notes = self.search(query_string.strip('"'))
+        else:
+            notes = self.filter(query_string.split())
+        return notes
 
     # Partial match, see https://stackoverflow.com/a/14389112
     def filter(self, query):
@@ -247,12 +261,13 @@ class ZK(object):
         if note:
             return note.filepath
         
-    def tags(self):
+    def tags(self, mincount, sort=True):
         # Return all tags and corresponding occurence count
         tags = {}
         for n in self._notes:
             for t in n.tags:
                 tags[t] = tags.setdefault(t, 0) + 1
+        tags = sorted([t for t,c in tags.items() if c >= mincount])        
         return tags
         
     def edit(self, note_id):

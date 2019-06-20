@@ -15,16 +15,13 @@ def index():
 
 @app.route("/tags")
 def tags():
-    tagdata = zk.tags()
-    tags = sorted([t for t,c in tagdata.items() if c > 3])
+    tags = zk.tags(mincount=4, sort=True)
     return render_template("tags.html", tags=tags)
-
 
 @app.route("/note/<note_id>")
 def note(note_id):
     note = zk.note(note_id)
     return render_template("note.html", note=note, body=Markup(mistune.markdown(note['body'])))
-
 
 @app.route("/edit/<note_id>")
 def edit(note_id):
@@ -36,18 +33,12 @@ def archive(note_id):
     zk.archive(note_id)
     return ('', 204)
 
-
 @app.route("/query/")
 @app.route("/query/<query_string>")
 def query(query_string=''):
     key = request.args.get('key', 'date')
     rev = request.args.get('reversed', 'true') == 'true'
-    zk.sort_key = key
-    zk.sort_reversed = rev
-    if query_string.startswith('"'):
-        notes = zk.search(query_string.strip('"'))
-    else:
-        notes = zk.filter(query_string.split())
+    notes = zk.query(query_string, sort_key=key, reverse=rev)
     return render_template("item.html", notes=notes)
 
 
