@@ -173,7 +173,7 @@ class ZK(object):
     # FIXME: To config file
     config = {
         'notesdir': '~/Dropbox/Notes',
-        'editor': 'open txmt://open?url=file://{}',
+        'editor': 'mate {}',
     }
     
     def __init__(self):
@@ -257,9 +257,9 @@ class ZK(object):
                  return n._asdict()
 
     def filepath(self, note_id):
-        note = self.note(note_id)
-        if note:
-            return note.filepath
+        for n in self._notes:
+             if n.id == note_id:
+                 return n.filepath
         
     def tags(self, mincount, sort=True):
         # Return all tags and corresponding occurence count
@@ -267,14 +267,15 @@ class ZK(object):
         for n in self._notes:
             for t in n.tags:
                 tags[t] = tags.setdefault(t, 0) + 1
-        tags = sorted([t for t,c in tags.items() if c >= mincount])        
+        taglist = [t for t,c in tags.items() if c >= mincount]
+        tags = sorted(taglist) if sort else taglist
         return tags
         
     def edit(self, note_id):
         filepath = self.filepath(note_id)
         editor_cmd = self.config['editor'].format(filepath)
-        # os.environ['ZK_TAGS']=",".join(self.tags().keys())
-        subprocess.call(editor_cmd, shell=True)
+        # os.environ['TM_TAGS']=",".join(self.tags(mincount=1))
+        subprocess.run(editor_cmd, shell=True)
 
     def archive(self, note_id):
         # FIXME: Use tag 'archived' with special handling
