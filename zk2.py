@@ -50,42 +50,62 @@ re_anfang = re.compile(ANFANG_REGEX)
 
 class ZKNote(object):
     """docstring for ZKNote"""
-    def __init__(self, filepath):
+    def __init__(self, filepath=None):
         super(ZKNote, self).__init__()
-        self.filepath = filepath
         self.data = {}
-        self.read()
-    
+        if filepath:
+            self.read(filepath)
+        else:
+            self.validate()
+
+    def __str__(self):
+        return f"""---
+Date: {self.date}
+Modified: {self.modified}
+Author: {self.author}
+ID: {self.id}
+Tags: {', '.join(self.tags)}
+Title: {self.title}
+---
+{self.body}"""
+
+
     def __getattr__(self, name):
         if name not in ALL_KEYS:
-            raise AttributeError("ZKNote has no attribute '{}'".format(name))  
+            raise AttributeError("ZKNote has no attribute '{}'".format(name))
         return self.data[name]
-    
+
     def _asdict(self):
         return self.data
-        
-    def read(self):
-        with open(self.filepath, 'r', encoding='utf-8') as fd:
+
+    def filepath(self, zkdir):
+        return os.path.join(zkdir, f"zk{self.id}.md")
+
+    def read(self, filepath):
+        with open(filepath, 'r', encoding='utf-8') as fd:
             self.parse(fd)
-        
-    def write(self):
-        pass
-    
+
+    def write(self, zkdir):
+        filepath = self.filepath(zkdir)
+        with open(filepath, 'w', encoding='utf-8') as fd:
+            print(self, file=fd, end='')
+
     def parse(self, file):
         self.parse_header(file)
         self.parse_body(file)
         self.validate()
-    
+
     def validate(self):
         self.data.setdefault(DATE, datetime.now())
         self.data.setdefault(ID, self.data[DATE].strftime("%y%m%d%H%M%S"))
         self.data.setdefault(MODIFIED, self.data[DATE])
-        self.data.setdefault(TAGS, ['untagged'])
+        self.data.setdefault(TAGS, [])
         self.data.setdefault(AUTHOR, pwd.getpwuid(os.getuid())[4])
+        self.data.setdefault(BODY, '')
         if not self.data.get(TITLE):
             match = re_anfang.match(self.data[BODY])
             self.data[TITLE] = match.group(1) if match else ''
-    
+
     def parse_body(self, file):
         self.data[BODY] = file.read()
 
@@ -95,7 +115,7 @@ class ZKNote(object):
         if line == "---":
             end_of_header = "---"
             line = file.readline()
-        
+
         while True:
             line = line.strip()
             if line == end_of_header:
@@ -104,7 +124,7 @@ class ZKNote(object):
             if match:
                 self.parse_entry(key=match.group(1), value=match.group(2))
             line = file.readline()
-        
+
     def parse_entry(self, key, value):
         key = key.lower()
         if key not in HEADER_KEYS:
@@ -113,8 +133,7 @@ class ZKNote(object):
             self.data[key] = datetime.fromisoformat(value)
             return
         if key == TAGS:
-            tagset = set(t.strip(' ,') for t in value.split())
-            self.data[key] = list(tagset)
+            self.data[key] = [t.strip(' ,') for t in value.split()]
             return
         self.data[key] = value
 
@@ -184,13 +203,13 @@ class ZK(object):
         self._sort_fn = self.sort_options[self._sort_key]
         self.sort_reversed = True
         self.rebuild_db()
-    
+
 
     def rebuild_db(self):
         self._notes = []
         self.load_notes(self.zkdir)
-    
-    
+
+
     @property
     def sort_key(self):
         return self._sort_key
@@ -262,8 +281,8 @@ class ZK(object):
     def filepath(self, note_id):
         for n in self._notes:
              if n.id == note_id:
-                 return n.filepath
-        
+                 return n.filepath(self.zkdir)
+
     def tags(self, mincount, sort=True):
         # Return all tags and corresponding occurence count
         tags = {}
@@ -273,7 +292,7 @@ class ZK(object):
         taglist = [t for t,c in tags.items() if c >= mincount]
         tags = sorted(taglist) if sort else taglist
         return tags
-        
+
     def edit(self, note_id):
         filepath = self.filepath(note_id)
         editor_cmd = self.config['editor'].format(filepath)
@@ -290,46 +309,62 @@ class ZK(object):
 
 
 if __name__ == '__main__':
-    import json
-    # note = note_factory('test.zk')
-    # print(note.id)
-    # print(note.date)
-    # print(note.date_string)
-    # print(note.modified)
-    # print(note.modified_string)
-    # print(note.author)
-    # print(note.title)
-    # print(note.tags)
-    # print('---')
-    # print(note.header)
-    # print()
-    # print(note.body)
+    import sys
+    print(sys.version)
+    note = ZKNote()
+    print(note)
+
+    note = ZKNote("tests/data/zk190912143019.md")
+    print(note)
+
+    note.write("tests/output")
 
 
-    t0 = datetime.now()
-    zk = ZK()
-    t1 = datetime.now()
-    t = (t1-t0).total_seconds()
-    print("Initialized {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
-    zk.sort_reversed = True
-    zk.sort_key = 'date'
-    t0 = datetime.now()
-    result = zk.filter(['zk', 'work', 'yadda'])
-    t1 = datetime.now()
-    t = (t1-t0).total_seconds()
-    print("Filtered {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
+
+
+
+
+
+    # import json
+    # # note = note_factory('test.zk')
+    # # print(note.id)
+    # # print(note.date)
+    # # print(note.date_string)
+    # # print(note.modified)
+    # # print(note.modified_string)
+    # # print(note.author)
+    # # print(note.title)
+    # # print(note.tags)
+    # # print('---')
+    # # print(note.header)
+    # # print()
+    # # print(note.body)
+    #
+    #
     # t0 = datetime.now()
-    # result = zk.search(r'textmate')
+    # zk = ZK()
     # t1 = datetime.now()
     # t = (t1-t0).total_seconds()
-    # print("Searched {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
-    # for n in result:
-    #     print(n.date, n.modified, n.title, n.tags_string)
-    # # print(json.dumps(zk.tags(), indent=4))
-    # print("{}\n\n{}".format(result[0].header, result[0].body))
-    n = zk.note('190618132530')
-    print(n.body)
-    
+    # print("Initialized {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
+    # zk.sort_reversed = True
+    # zk.sort_key = 'date'
+    # t0 = datetime.now()
+    # result = zk.filter(['zk', 'work', 'yadda'])
+    # t1 = datetime.now()
+    # t = (t1-t0).total_seconds()
+    # print("Filtered {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
+    # # t0 = datetime.now()
+    # # result = zk.search(r'textmate')
+    # # t1 = datetime.now()
+    # # t = (t1-t0).total_seconds()
+    # # print("Searched {} notes in {:.1f} ms".format(len(zk._notes), t*1000))
+    # # for n in result:
+    # #     print(n.date, n.modified, n.title, n.tags_string)
+    # # # print(json.dumps(zk.tags(), indent=4))
+    # # print("{}\n\n{}".format(result[0].header, result[0].body))
+    # n = zk.note('190618132530')
+    # print(n.body)
+
 
 
 
