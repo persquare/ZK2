@@ -140,38 +140,6 @@ Title: {self.title}
 
 
 #
-# Using a namedtuple instead of a class speeds up filtering by a 2x factor
-#
-Note = namedtuple('Note', [
-    'id',
-    'date',
-    'modified',
-    'author',
-    'title',
-    'tags',
-    'body',
-    'filepath'
-])
-
-#
-# Reusing the ZKNote class to parse files and populate Note namedtuple
-# adds just a 10ms to startup time, so no need to write special code.
-#
-def create_note(filepath):
-    n = ZKNote(filepath)
-    note = Note(
-        id=n.id,
-        date=n.date,
-        modified=n.modified,
-        author=n.author,
-        title=n.title,
-        tags=n.tags,
-        body=n.body,
-        filepath=n.filepath)
-    return note
-
-
-#
 # The note_factory used by the ZK class hides the actual implementation (object/tuple)
 #
 note_factory = ZKNote
