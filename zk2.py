@@ -192,9 +192,9 @@ class ZK(object):
     # FIXME: To config file
     config = {
         'notesdir': '~/Dropbox/Notes',
-        'editor': 'mate {}',
+        'editor': '/usr/local/bin/mate {}',
     }
-    
+
     def __init__(self):
         super(ZK, self).__init__()
         self.zkdir = os.path.expanduser(self.config['notesdir'])
