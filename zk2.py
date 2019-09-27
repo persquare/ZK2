@@ -145,6 +145,14 @@ Title: {self.title}
 note_factory = ZKNote
 # note_factory = create_note
 
+def get_config():
+    # FIXME: To config file
+    config = {
+        'notesdir': '~/Dropbox/Notes',
+        'editor': '/usr/local/bin/mate {}',
+    }
+    return config
+
 #
 # ZK class to query note collection
 #
@@ -157,11 +165,7 @@ class ZK(object):
         TITLE: lambda x: x.title,
     }
 
-    # FIXME: To config file
-    config = {
-        'notesdir': '~/Dropbox/Notes',
-        'editor': '/usr/local/bin/mate {}',
-    }
+    config = get_config()
 
     def __init__(self):
         super(ZK, self).__init__()
