@@ -11,6 +11,7 @@ zk = zk2.ZK()
 
 @app.route("/")
 def index():
+    zk.rebuild_db()
     return render_template("index.html")
 
 @app.route("/tags")
