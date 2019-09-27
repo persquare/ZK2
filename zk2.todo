@@ -4,7 +4,7 @@ ZK2:
 + archived button
   - archived handling
 - remove redundant data in ZKNote
-- reload db
++ reload db
 - watch dir for changes (pip watchdog)
 - arrow key navigation
 - Tag cloud 
