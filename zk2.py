@@ -274,10 +274,11 @@ class ZK(object):
     def archive(self, note_id):
         # FIXME: Use tag 'archived' with special handling
         #        Need to be able to read/write header properly
-        
+
         # filepath = self.filepath(note_id)
         # shutil.move(filepath, filepath+".deleted")
-        print("ARCHIVE", note_id)    
+        raise Exception("Force reload!")
+        print("ARCHIVE", note_id)
 
 
 if __name__ == '__main__':
