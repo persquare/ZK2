@@ -21,7 +21,7 @@ function drag(event) {
     var note_id = event.target.parentElement.id;
     var content = "zk://"+note_id+" \""+note_title+"\"";
     if (event.altKey) {
-        content = "["+note_title+"](zk://"+note_id+")";
+        content = "["+note_title.trim()+"](zk://"+note_id+")";
     }
     event.dataTransfer.setData("text", content);
 }
