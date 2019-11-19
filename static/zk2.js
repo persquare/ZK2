@@ -69,6 +69,11 @@ function highlight_item(note_id) {
     }
 }
 
+function show_zk() {
+    var link = this.href.slice(5);
+    show_note(link);
+}
+
 function mangle_links(element) {
   var links = element.getElementsByTagName('a');
   var re_http = /^https?:\/\//;
@@ -77,7 +82,7 @@ function mangle_links(element) {
     var url = links[i].href;
     var zk_match = re_zk.exec(url);
     if (zk_match != null) {
-        links[i].onclick = function () {show_note(zk_match[1]); return false;};
+        links[i].addEventListener('click', show_zk, false); 
     } else if (re_http.test(url)) {
         links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
     }
