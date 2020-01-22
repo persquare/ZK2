@@ -149,7 +149,7 @@ def get_config():
     # FIXME: To config file
     config = {
         'notesdir': '~/Library/Mobile Documents/com~apple~CloudDocs/zk',
-        'editor': '/usr/local/bin/mate {}',
+        'editor': '/usr/local/bin/mate "{}"',
     }
     return config
 
