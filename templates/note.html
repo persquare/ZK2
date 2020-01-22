@@ -5,7 +5,7 @@
     </p>
     <pre class="header" id="note_header">
 Date: {{note.date}}  {% if note.date != note.modified %}Modified: {{note.modified}}{% endif %}
-Tags: {{note.tags_string}}
+Tags: {% for tag in note.tags %}{{tag}} {% endfor %}
 Title: {{note.title}}    
 </pre><!--Id: {{note.id}} --> <!-- Author: {{note.author}} -->
 </div>
