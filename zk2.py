@@ -148,7 +148,7 @@ note_factory = ZKNote
 def get_config():
     # FIXME: To config file
     config = {
-        'notesdir': '~/Dropbox/Notes',
+        'notesdir': '~/Library/Mobile Documents/com~apple~CloudDocs/zk',
         'editor': '/usr/local/bin/mate {}',
     }
     return config
