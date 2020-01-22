@@ -137,7 +137,11 @@ Title: {self.title}
             return
         self.data[key] = value
 
-
+    def toggle_archived(self):
+        if ARCHIVED in self.tags:
+            self.tags.remove(ARCHIVED)
+        else:
+            self.tags.append(ARCHIVED)
 
 #
 # The note_factory used by the ZK class hides the actual implementation (object/tuple)
@@ -272,13 +276,10 @@ class ZK(object):
         subprocess.run(editor_cmd, shell=True)
 
     def archive(self, note_id):
-        # FIXME: Use tag 'archived' with special handling
-        #        Need to be able to read/write header properly
-
-        # filepath = self.filepath(note_id)
-        # shutil.move(filepath, filepath+".deleted")
-        raise Exception("Force reload!")
-        print("ARCHIVE", note_id)
+        filepath = self.filepath(note_id)
+        note = ZKNote(filepath)
+        note.toggle_archived()
+        note.write(self.zkdir)
 
 
 if __name__ == '__main__':
