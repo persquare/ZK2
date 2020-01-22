@@ -225,20 +225,26 @@ class ZK(object):
 
     # Partial match, see https://stackoverflow.com/a/14389112
     # FIXME: Combined query expression covering all kinds
+    # Argument query is list of (possibly partial) tags
+    # Empty list matches everything
     def filter(self, query):
-        # Argument query is list of (possibly partial) tags
-        # Empty list matches everything
-        r = []
-        for n in self._notes:
-            if (ARCHIVED in n.tags and ARCHIVED not in query):
-                continue
-            for q in query:
-                if any(t for t in n.tags if t.startswith(q)):
+        if len(query) == 1 and query[0] == 'untagged':
+            # Return untagged notes
+            r = [n for n in self._notes if not n.tags]
+        else:
+            # Match against tags in query
+            r = []
+            for n in self._notes:
+                # Skip notes tagged with ARCHIVED unless ARCHIVED is part of query
+                if (ARCHIVED in n.tags and ARCHIVED not in query):
                     continue
+                for q in query:
+                    if any(t for t in n.tags if t.startswith(q)):
+                        continue
+                    else:
+                        break
                 else:
-                    break
-            else:
-                r.append(n)
+                    r.append(n)
         r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
         return [n._asdict() for n in r]
 
