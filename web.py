@@ -16,7 +16,7 @@ def index():
 
 @app.route("/tags")
 def tags():
-    tags = zk.tags(mincount=4, sort=True)
+    tags = zk.tags(mincount=6, sort=True)
     return render_template("tags.html", tags=tags)
 
 @app.route("/note/<note_id>")
