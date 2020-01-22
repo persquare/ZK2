@@ -1,29 +1,52 @@
-ZK2: 
-+ edit button
-  + editor linkback
-+ archived button
-  - archived handling
-- remove redundant data in ZKNote
-+ reload db
-- watch dir for changes (pip watchdog)
-- arrow key navigation
-- Tag cloud 
-- CSS
-  - styling
-  + scrolling itemlist
+ZK2:
+- reload db
 - date search
 - show search stats
 - Manipulation API
-  - new note
   - new linked note
   - split note
   - merge note
 
 tmBundle:
-  - browse notes
+  - Update modified on save
   - related notes (from selected text)
-  - interface manipulation API  
+  - Use API to implement
+    - split note
+    - merge note
+    - new linked note
+    - backlinks
   - grammar
-    - styled header
-    - include markdown
-  - tag list in environment?
+    Simplest way to achieve this is to require Markdown (Front matter) bundle
+    - require Markdown (Front matter)
+      Very unclear how that works in practice...
+      - Add to help
+  - tag autocompletion
+  -
+
+Archive:
+---- 2020-01-22 17:29:23 ----
++ archived handling
++ untagged handling
++ Bug: tags are missing in header
+---- 2020-01-22 15:57:21 ----
++ Service
+---- 2020-01-22 15:23:27 ----
+x remove redundant data in ZKNote
+x watch dir for changes (pip watchdog)
+x arrow key navigation
++ Tag cloud
++ CSS
++ styling
++ Convert to new format
++ iCloud Drive support
++ browse notes
+x styled header
+x include markdown
+---- 2020-01-22 13:28:47 ----
++ new note
+---- 2020-01-22 13:28:37 ----
++ edit button
++ editor linkback
++ archived button
++ reload db
++ scrolling itemlist
