@@ -11,8 +11,9 @@ zk = zk2.ZK()
 
 @app.route("/")
 def index():
+    val = request.args.get('filter_value', '')
     zk.rebuild_db()
-    return render_template("index.html")
+    return render_template("index.html", filter_value=val)
 
 @app.route("/tags")
 def tags():

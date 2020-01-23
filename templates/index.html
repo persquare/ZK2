@@ -20,7 +20,7 @@
         <!-- ============== -->
         <div id="filter_box">
             <fieldset>
-                Filter notes: <input type="search" id="search" oninput="filter()" onsubmit="filter()">
+                Filter notes: <input type="search" id="search" {% if filter_value %}value="{{filter_value}}"{% endif %} oninput="filter()" onsubmit="filter()">
                 <!-- <span id="results"> </span> -->
                 Sort order: 
                 <input id="date_option" type="radio" name="sort_option" value="date" onchange="filter();" checked>Date 

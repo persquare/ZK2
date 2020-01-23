@@ -3,7 +3,7 @@
 // ======================
 
 function reset() {
-    filter_notes('');
+    filter();
     set_tags();
     add_tag_listener(document.getElementById('tag_box'), filter_by_tag);
     add_tag_listener(document.getElementById('list_box'), filter_by_tag);

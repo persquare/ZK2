@@ -9,7 +9,7 @@ ZK2:
 
 tmBundle:
   - Update modified on save
-  - related notes (from selected text)
+  + related notes (from selected text)
   - Use API to implement
     - split note
     - merge note
