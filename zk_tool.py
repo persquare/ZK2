@@ -40,7 +40,16 @@ if __name__ == '__main__':
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
                         help="Read body text from infile, use '-' for stdin")
 
+    parser.add_argument('--tags', action="store_true",
+                        help='Return current tag set in space separated list')
+
     args = parser.parse_args()
+
+    if args.tags:
+        db = zk2.ZK()
+        tags = db.tags(mincount=1)
+        print("\n".join(tags))
+        sys.exit(0)
 
     body = args.infile.read() if args.infile else None
 
