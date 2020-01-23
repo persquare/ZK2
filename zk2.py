@@ -239,7 +239,7 @@ class ZK(object):
                 if (ARCHIVED in n.tags and ARCHIVED not in query):
                     continue
                 for q in query:
-                    if any(t for t in n.tags if t.startswith(q)):
+                    if any(t for t in n.tags if t.lower().startswith(q.lower())):
                         continue
                     else:
                         break
