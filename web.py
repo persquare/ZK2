@@ -5,9 +5,10 @@ from flask import Flask, render_template, request, Markup
 
 import zk2
 
+global zk
+
 app = Flask(__name__)
 
-zk = zk2.ZK()
 
 @app.route("/")
 def index():
@@ -45,4 +46,31 @@ def query(query_string=''):
 
 
 if __name__ == '__main__':
-   app.run(debug = True, port=9075)
+
+   import argparse
+
+
+   long_desc = """
+   Create a zk-note file with some defaults filled in.
+   The name of the created file matches the ID of the note, i.e.: "zk<ID>.md"
+
+   Returns the full path to the newly created file on success.
+   """
+
+   parser = argparse.ArgumentParser(description=long_desc)
+
+   parser.add_argument('--debug', action="store_true", default=False,
+                       help='Run Flask server with debug option')
+
+   parser.add_argument('--notesdir', default=None, type=str,
+                       help="Directory of ZK notes")
+
+   parser.add_argument('--port', default=9075,
+                       help='Port to serve on')
+
+   args = parser.parse_args()
+
+   global zk
+
+   zk = zk2.ZK(notesdir=args.notesdir)
+   app.run(debug = args.debug, port=args.port)

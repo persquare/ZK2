@@ -79,7 +79,7 @@ Title: {self.title}
         return self.data
 
     def filepath(self, zkdir):
-        return os.path.join(zkdir, f"zk{self.id}.md")
+        return os.path.join(os.path.expanduser(zkdir), f"zk{self.id}.md")
 
     def read(self, filepath):
         with open(filepath, 'r', encoding='utf-8') as fd:
@@ -171,9 +171,9 @@ class ZK(object):
 
     config = get_config()
 
-    def __init__(self):
+    def __init__(self, notesdir=None):
         super(ZK, self).__init__()
-        self.zkdir = os.path.expanduser(self.config['notesdir'])
+        self.zkdir = os.path.expanduser(notesdir or self.config['notesdir'])
         self._sort_key = DATE
         # FIXME: Use transient sort_key and sort_reversed
         self._sort_fn = self.sort_options[self._sort_key]
