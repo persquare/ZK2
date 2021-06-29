@@ -19,7 +19,7 @@ function filter() {
 function drag(event) {
     var note_title = event.target.innerHTML;
     var note_id = event.target.parentElement.id;
-    var content = "zk://"+note_id+" \""+note_title+"\"";
+    var content = "zk://"+note_id+" \""+note_title.trim()+"\"";
     if (event.altKey) {
         content = "["+note_title.trim()+"](zk://"+note_id+")";
     }
