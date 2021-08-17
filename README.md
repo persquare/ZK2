@@ -1,2 +1,2 @@
 # ZK2
-A more generic Zettelkasten manager
+A more generic Zettelkasten manager (server/client)
