@@ -2,6 +2,7 @@ ZK2:
 - reload db
 - date search
 - show search stats
++ backlinks
 - Manipulation API
   - new linked note
   - split note
@@ -13,7 +14,6 @@ tmBundle:
     - split note
     - merge note
     - new linked note
-    - backlinks
   - grammar
     Simplest way to achieve this is to require Markdown (Front matter) bundle
     - require Markdown (Front matter)
