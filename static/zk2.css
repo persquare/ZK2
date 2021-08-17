@@ -79,6 +79,14 @@ div.header pre {
 	padding-bottom: 1em;
 }
 
+div.backlinks {
+	background-color: #fefefe;
+    border:none;
+    padding:0;
+	border-top: 2px solid #88f;
+	padding-bottom: 1em;
+}
+
 div.header p {
     text-align:right;
     padding: 0px;

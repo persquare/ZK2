@@ -24,7 +24,7 @@ import pwd
 import subprocess
 import shutil
 from datetime import datetime
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 
 AUTHOR = 'author'
@@ -43,9 +43,11 @@ ALL_KEYS = HEADER_KEYS + [BODY]
 
 HEADER_LINE_REGEX = r'^([a-zA-Z][a-zA-Z0-9_]*):\s*(.*)\s*'
 ANFANG_REGEX = r'^((?:\S+\s+){1,6})'
+ZK_LINK_REGEX = r'zk://[0-9]{12,}'
 
 re_header_entry = re.compile(HEADER_LINE_REGEX)
 re_anfang = re.compile(ANFANG_REGEX)
+re_zk_link = re.compile(ZK_LINK_REGEX)
 
 
 class ZKNote(object):
@@ -77,6 +79,9 @@ Title: {self.title}
 
     def _asdict(self):
         return self.data
+
+    def set_backlinks(self, links):
+        self.data['backlinks'] = links
 
     def filepath(self, zkdir):
         return os.path.join(os.path.expanduser(zkdir), f"zk{self.id}.md")
@@ -210,6 +215,14 @@ class ZK(object):
 
     def load_notes(self, zkdir):
         self._notes = [note_factory(note) for note in self.all_notes(zkdir)]
+        backlinks = defaultdict(list)
+        for note in self._notes:
+            match = re_zk_link.findall(note.body)
+            for m in match:
+                backlinks[m].append({"url":f"zk://{note.id}", "title":f"{note.title}"})
+        for note in self._notes:
+            note.set_backlinks(backlinks.get(f"zk://{note.id}", []))
+
 
     #
     # FIXME: Use generic query_string and combine filter/search/sort into same method

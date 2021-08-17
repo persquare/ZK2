@@ -11,4 +11,10 @@ Title: {{note.title}}
 </div>
 <div id="note_body">
 {{body}}
+{% if note.backlinks %}
+<div class="backlinks">
+<h3>Referring notes:</h3>
+{% for link in note.backlinks %}<a href="{{link.url}}">{{link.title}}</a><br/>{% endfor %}
+</div>
+{% endif %}
 </div>
