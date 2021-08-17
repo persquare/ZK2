@@ -19,7 +19,7 @@ tmBundle:
     - require Markdown (Front matter)
       Very unclear how that works in practice...
       - Add to help
-  - tag autocompletion
+  + tag autocompletion
   -
 
 Archive:
