@@ -169,4 +169,17 @@ div a.item:first {
 	color: #000;
 }
 
+.tiptext {
+  color: #069;
+  cursor: pointer;
+}
 
+iframe.peek {
+  display: none;
+  /* scale: 1.0; */
+  position: absolute;
+  border: 1px solid #000;
+  margin: 5%;
+  width: 90%;
+  height: 50%;
+}

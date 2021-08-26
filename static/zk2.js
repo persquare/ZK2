@@ -82,7 +82,10 @@ function mangle_links(element) {
     var url = links[i].href;
     var zk_match = re_zk.exec(url);
     if (zk_match != null) {
-        links[i].addEventListener('click', show_zk, false); 
+        links[i].addEventListener('click', show_zk, false);
+        links[i].addEventListener('mouseover', peekOn);
+        links[i].addEventListener('mouseout', peekOff);
+        links[i].innerHTML += '<iframe class="peek"></iframe>';
     } else if (re_http.test(url)) {
         links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
     }
@@ -96,6 +99,32 @@ function edit(note_id) {
 function archive(note_id) {
     get_request("archive/"+note_id, function(){});
 }
+
+// ================
+// = Peek preview =
+// ================
+
+function peekOn(evt) {
+    let iframe = this.querySelector('.peek');
+    let re_zk = /^zk:\/\/(\d+)/;
+    var peek_url = this.href;
+    var zk_match = re_zk.exec(peek_url);
+    if (zk_match != null) {
+        peek_url = "peek/" + peek_url.slice(5);
+    }
+    if (iframe) {
+        iframe.src = peek_url;
+        iframe.style.display = 'block';
+    }
+};
+
+function peekOff(evt) {
+    let iframe = this.querySelector('.peek');
+    if (iframe) {
+        iframe.style.display = 'none';
+    }
+};
+
 // =============
 // = Callbacks =
 // =============

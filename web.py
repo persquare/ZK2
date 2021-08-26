@@ -26,6 +26,11 @@ def note(note_id):
     note = zk.note(note_id)
     return render_template("note.html", note=note, body=Markup(mistune.markdown(note['body'])))
 
+@app.route("/peek/<note_id>")
+def peek(note_id):
+    note = zk.note(note_id)
+    return render_template("peek.html", note=note, body=Markup(mistune.markdown(note['body'])))
+
 @app.route("/edit/<note_id>")
 def edit(note_id):
     zk.edit(note_id)

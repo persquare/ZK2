@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>
+            Zettelkasten Notes
+        </title>
+        <!--base href="file:///Users/per/Source/Zettelkasten.tmbundle/Support/lib/"-->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='zk2.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='zk2.js') }}" ></script>
+    </head>    
+    <body>
+        <div id="note_body" class="zk">
+            {{body}}
+        </div>
+    </body>
+</html>
