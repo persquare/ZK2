@@ -2,7 +2,6 @@ ZK2:
 - reload db
 - date search
 - show search stats
-+ backlinks
 - Manipulation API
   - new linked note
   - split note
@@ -19,10 +18,13 @@ tmBundle:
     - require Markdown (Front matter)
       Very unclear how that works in practice...
       - Add to help
-  + tag autocompletion
   -
 
 Archive:
+---- 2021-11-12 15:31:10 ----
++ Fix rendering bug where first line after header end (---) is skipped @mit
++ backlinks
+  + tag autocompletion
 ---- 2020-01-23 15:48:04 ----
 + case insensitive tag comparison
 ---- 2020-01-23 15:26:52 ----
