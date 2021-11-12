@@ -177,9 +177,10 @@ div a.item:first {
 iframe.peek {
   display: none;
   /* scale: 1.0; */
+  /* zoom: 50%; */
   position: absolute;
   border: 1px solid #000;
   margin: 5%;
-  width: 90%;
-  height: 50%;
+  width: 600px;
+  height: 400px;
 }

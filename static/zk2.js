@@ -85,6 +85,7 @@ function mangle_links(element) {
         links[i].addEventListener('click', show_zk, false);
         links[i].addEventListener('mouseover', peekOn);
         links[i].addEventListener('mouseout', peekOff);
+        // links[i].class = 'tiptext';
         links[i].innerHTML += '<iframe class="peek"></iframe>';
     } else if (re_http.test(url)) {
         links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
