@@ -119,20 +119,21 @@ Title: {self.title}
         self.data[BODY] = file.read()
 
     def parse_header(self, file):
-        end_of_header = ""
-        line = file.readline().strip()
-        if line == "---":
-            end_of_header = "---"
-            line = file.readline()
+        # Skip initial lines
+        header_tag = '---'
+        line = ""
+        while line != header_tag:
+            line = file.readline().strip()
 
         while True:
+            line = file.readline()
             line = line.strip()
-            if line == end_of_header:
+            if line == header_tag:
                 break
             match = re_header_entry.match(line)
             if match:
                 self.parse_entry(key=match.group(1), value=match.group(2))
-            line = file.readline()
+
 
     def parse_entry(self, key, value):
         key = key.lower()
