@@ -1,14 +1,18 @@
 # File format:
-# 1. Header
+# 0. Tagline
+#    Optional: <!-- ZK<optional string> -->
+# 1. Header (enclosed in '---')
 #    Mandatory: Date, ID
 #    Optional: Author, Modified, Tags, Title
 #    Example:
+#           ---
 #           Date: 2019-02-10 16:22:16
 #           Modified: 2019-02-11 18:24:10
 #           Author: Per Persson
 #           ID: 190210162216
 #           Tags: zk, howto
 #           Title: Linking notes
+#           ---
 #
 # 2. Blank line(s)
 #
@@ -16,7 +20,6 @@
 
 # File type:
 # 1. zkXXXXXX.md (compatible with any editor)
-# 2. XXXXXX.zk (can have special grammar with markdown injection)
 
 import os
 import re
@@ -61,7 +64,8 @@ class ZKNote(object):
             self.validate()
 
     def __str__(self):
-        return f"""---
+        return f"""<!-- ZK{self.id} -->
+---
 Date: {self.date}
 Modified: {self.modified}
 Author: {self.author}
