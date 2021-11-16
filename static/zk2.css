@@ -157,12 +157,12 @@ a.item {
 
 
 .tag {
-    font-size: 10px;
+    font-size: 11px;
     /*font-family: "Trebuchet MS";*/
     border-radius: 3px;
     padding: 2px;
-	background-color: #eee;
-	color: #000;
+	background-color: #fea;
+	color: #444;
 }
 
 .tiptext {
