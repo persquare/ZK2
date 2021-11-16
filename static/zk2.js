@@ -74,7 +74,22 @@ function show_zk() {
     show_note(link);
 }
 
+function insertAfter(referenceNode, newNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+function createPeek(url) {
+    var a = document.createElement('a'); 
+    a.href = url;
+    a.addEventListener('mouseover', peekOn);
+    a.addEventListener('mouseout', peekOff);
+    a.innerHTML = '<img src="static/if_eye_370084.svg" width="12" height="12" /><iframe class="peek"></iframe>';
+    return a
+}
+    
+
 function mangle_links(element) {
+  var preview = [];    
   var links = element.getElementsByTagName('a');
   var re_http = /^https?:\/\//;
   var re_zk = /^zk:\/\/(\d+)/;
@@ -83,14 +98,12 @@ function mangle_links(element) {
     var zk_match = re_zk.exec(url);
     if (zk_match != null) {
         links[i].addEventListener('click', show_zk, false);
-        links[i].addEventListener('mouseover', peekOn);
-        links[i].addEventListener('mouseout', peekOff);
-        // links[i].class = 'tiptext';
-        links[i].innerHTML += '<iframe class="peek"></iframe>';
+        preview.push(links[i]);
     } else if (re_http.test(url)) {
         links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
     }
   }
+  return preview
 }
 
 function edit(note_id) {
@@ -142,7 +155,10 @@ function update_tag_box(data) {
 
 function update_note(note) {
     document.getElementById("preview_pane").innerHTML = note;
-    mangle_links(document.getElementById("note_body"));
+    preview = mangle_links(document.getElementById("note_body"));
+    for (var i = 0; i < preview.length; i++) {
+        insertAfter(preview[i], createPeek(preview[i].href));
+    }
 }
 
 function filter_by_tag(tag) {
