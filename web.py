@@ -1,7 +1,7 @@
 import json
 
 import mistune
-from flask import Flask, render_template, request, Markup
+from flask import Flask, render_template, request, Markup, send_from_directory
 
 import zk2
 
@@ -48,6 +48,10 @@ def query(query_string=''):
     rev = request.args.get('reversed', 'true') == 'true'
     notes = zk.query(query_string, sort_key=key, reverse=rev)
     return render_template("item.html", notes=notes)
+
+@app.route("/img/<path:name>")
+def img(name):
+    return send_from_directory(f"{zk.zkdir}/img", name)
 
 
 if __name__ == '__main__':
