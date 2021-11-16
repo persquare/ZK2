@@ -123,13 +123,13 @@ div.backlinks {
 
 }
 
-.zk img {
+.zk p > img {
     max-width: 50%;
     max-height: 300px;
     transition: 0.25s;
 }
 
-.zk img:hover {
+.zk p > img:hover {
     transform: scale(2);
     transition-delay:1s
 }
