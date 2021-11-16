@@ -7,26 +7,10 @@ div#list_box
 	overflow-y: auto;
 	overflow-x: hidden;
     height: 90%;
-/*    top: 90px;
-    bottom:0px;
-*/
-    /*	width: 40%;
-	overflow: auto;
-	position: absolute;
-	top: 40px;
-	bottom: 0;
-	left: 0; */
-	/* background: #eee; */
-}
-
-div#preview_box
-{
-	margin-left: 200px;
-	/* width: 60%;
-	float: right; */
 }
 
 div#preview_pane {
+    margin-left: 200px;
 	padding-left: 10px;
 	padding-right: 10px;
 	border-bottom: 1px solid #eef;
@@ -35,22 +19,22 @@ div#preview_pane {
 div#tag_box {
 	clear: both;
 	padding: 4px;
-    height:36px;
+    height:auto;
 }
 
 div#filter_box 
 {
-	height: 54px;
-	line-height: 30px;
-	vertical-align: middle;
-	/* border-bottom: 1px solid #999; */
-}
-
-div#filter_box
-{
+	height: auto;
     padding: 4px;
+	vertical-align: middle;
+	border-bottom: 1px solid #eef;
+	border-top: 1px solid #eef;
 }
 
+fieldset {
+    border: 1px;
+    padding: 0;
+}
 /* Styling */
 
 html, body {
@@ -61,22 +45,28 @@ html, body {
     font: 12px "Trebuchet MS", Helvetica, sans-serif;
 }
 
-.zk code, pre {
-	font-size: 11;
-	font-family: "Menlo", "Monaco", "Courier New", monospace;
-	word-wrap: break-word;
-	white-space: pre;
-	white-space: pre-wrap;
-	white-space: -moz-pre-wrap;
-	white-space: -o-pre-wrap;
-}
 
-div.header pre {
+div.note_header {
+    text-align:left;
 	background-color: #fefefe;
     border:none;
     padding:0;
 	border-bottom: 2px solid #88f;
-	padding-bottom: 1em;
+}
+
+.note_info {
+    padding:0;
+    list-style-type: none;
+}
+
+div.note_actions {
+    float:right;
+}
+
+.note_header h2, p, .tags {
+    margin: 0;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 div.backlinks {
@@ -87,9 +77,14 @@ div.backlinks {
 	padding-bottom: 1em;
 }
 
-div.header p {
-    text-align:right;
-    padding: 0px;
+.zk code, pre {
+	font-size: 11;
+	font-family: "Menlo", "Monaco", "Courier New", monospace;
+	word-wrap: break-word;
+	white-space: pre;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -o-pre-wrap;
 }
 
 .zk pre {
@@ -128,43 +123,44 @@ div.header p {
 
 }
 
+.zk img {
+    max-width: 50%;
+    max-height: 300px;
+    transition: 0.25s;
+}
+
+.zk img:hover {
+    transform: scale(2);
+    transition-delay:1s
+}
+
 a {
  	text-decoration: none;	
 }
-	
+
 a.item {
     background-color: inherit;
 	display: block;
 	padding: 4px;
-	/*height: 24px;*/
 	border-right: 1px solid #eef;
 	border-bottom: 1px solid #eef;
   	text-decoration: none;
 }
 
-/*
-div a.item:first {
-	border-top: none;
-}
-*/
 .anfang {
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
-  	font-size: 12px;
-  	color: #333;
+  	color: #33a;
 }
 
-/*.tags {
-  font-family: Helvetica;
-  font-size: 11px;
-  color: #777;
+.tags {
+    
 }
-*/
+
+
 .tag {
     font-size: 10px;
-    font-family: "Trebuchet MS";
+    /*font-family: "Trebuchet MS";*/
     border-radius: 3px;
-    /* border-right: 1px solid #fefefe; */
-    padding: 1px;
+    padding: 2px;
 	background-color: #eee;
 	color: #000;
 }

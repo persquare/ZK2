@@ -1,13 +1,11 @@
-<div class="header">
-    <p>
+<div class="note_header">
+    <div class="note_actions">
         <img src="static/if_note_370077.svg" alt="Edit" width="32" height="32" onclick="edit('{{note.id}}')">
         <img src="static/if_delete_370086.svg" alt="Archive" width="32" height="32" onclick="archive('{{note.id}}')">
-    </p>
-    <pre class="header" id="note_header">
-Date: {{note.date}}  {% if note.date != note.modified %}Modified: {{note.modified}}{% endif %}
-Tags: {% for tag in note.tags %}{{tag}} {% endfor %}
-Title: {{note.title}}    
-</pre><!--Id: {{note.id}} --> <!-- Author: {{note.author}} -->
+    </div>
+    <h2>{{note.title}}</h2>
+    <p>{{note.date}}  {% if note.date != note.modified %}Modified: {{note.modified}}{% endif %}</p>
+    <p>{% for tag in note.tags %}{{tag}} {% endfor %}</p>
 </div>
 <div id="note_body">
 {{body}}
