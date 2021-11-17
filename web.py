@@ -21,15 +21,17 @@ def tags():
     tags = zk.tags(mincount=6, sort=True)
     return render_template("tags.html", tags=tags)
 
+def _render(note_id, template):
+    note = zk.note(note_id)
+    return render_template(template, note=note, body=Markup(mistune.markdown(note['body'])))
+
 @app.route("/note/<note_id>")
 def note(note_id):
-    note = zk.note(note_id)
-    return render_template("note.html", note=note, body=Markup(mistune.markdown(note['body'])))
+    return _render(note_id, "note.html")
 
 @app.route("/peek/<note_id>")
 def peek(note_id):
-    note = zk.note(note_id)
-    return render_template("peek.html", note=note, body=Markup(mistune.markdown(note['body'])))
+    return _render(note_id, "peek.html")
 
 @app.route("/edit/<note_id>")
 def edit(note_id):
@@ -60,10 +62,7 @@ if __name__ == '__main__':
 
 
    long_desc = """
-   Create a zk-note file with some defaults filled in.
-   The name of the created file matches the ID of the note, i.e.: "zk<ID>.md"
-
-   Returns the full path to the newly created file on success.
+   Serve a ZK "database"
    """
 
    parser = argparse.ArgumentParser(description=long_desc)
