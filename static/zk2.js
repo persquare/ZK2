@@ -69,7 +69,9 @@ function highlight_item(note_id) {
     }
 }
 
-function show_zk() {
+function show_zk(event) {
+    event.preventDefault();
+    event.stopPropagation();
     var link = this.href.slice(5);
     show_note(link);
 }
