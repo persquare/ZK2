@@ -202,24 +202,22 @@ class ZK(object):
         self.sort_reversed = True
         self.rebuild_db()
 
+    def _welcome_note(self):
+        welcome = ZKNote()
+        welcome.data[TITLE] = "Welcome!"
+        welcome.data[TAGS] = ["howto", "workflow"]
+        with open('README.md') as fd:
+            body = fd.read()
+        welcome.data[BODY] = body
+        welcome.write(self.zkdir)
+
     def _maybe_init_db(self):
         try:
             os.makedirs(self.zkdir)
-            welcome = ZKNote()
-            welcome.data[TITLE] = "Welcome!"
-            welcome.data[TAGS] = ["howto", "workflow"]
-            welcome.data[BODY] = """
-## Your first note
-
-> I would have written a shorter letter, but I did not have the time.
-
-– Blaise Pascal
-"""
-            welcome.write(self.zkdir)
-        except Exception as e:
-            print(f"Error: {e}")
-
-
+        except FileExistsError:
+            pass
+        if not os.listdir(self.zkdir):
+            self._welcome_note()
 
     def rebuild_db(self):
         self._notes = []
