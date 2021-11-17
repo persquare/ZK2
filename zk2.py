@@ -160,12 +160,24 @@ note_factory = ZKNote
 # note_factory = create_note
 
 def get_config():
-    # FIXME: To config file
-    config = {
-        'notesdir': '~/Library/Mobile Documents/com~apple~CloudDocs/zk',
-        'editor': '/usr/local/bin/mate "{}"',
-    }
-    return config
+    try:
+        import config
+    except:
+        pass
+
+    conf = {}
+
+    try:
+        conf['notesdir'] = config.notesdir
+    except:
+        conf['notesdir'] = '~/.zk'
+
+    try:
+        conf['editor'] = config.editor
+    except:
+        conf['editor'] = '/usr/bin/nano'
+
+    return conf
 
 #
 # ZK class to query note collection
@@ -190,9 +202,28 @@ class ZK(object):
         self.sort_reversed = True
         self.rebuild_db()
 
+    def _maybe_init_db(self):
+        try:
+            os.makedirs(self.zkdir)
+            welcome = ZKNote()
+            welcome.data[TITLE] = "Welcome!"
+            welcome.data[TAGS] = ["howto", "workflow"]
+            welcome.data[BODY] = """
+## Your first note
+
+> I would have written a shorter letter, but I did not have the time.
+
+– Blaise Pascal
+"""
+            welcome.write(self.zkdir)
+        except Exception as e:
+            print(f"Error: {e}")
+
+
 
     def rebuild_db(self):
         self._notes = []
+        self._maybe_init_db()
         self.load_notes(self.zkdir)
 
 
@@ -295,7 +326,7 @@ class ZK(object):
 
     def edit(self, note_id):
         filepath = self.filepath(note_id)
-        editor_cmd = self.config['editor'].format(filepath)
+        editor_cmd = f'{self.config["editor"]} "{filepath}"'
         # os.environ['TM_TAGS']=",".join(self.tags(mincount=1))
         subprocess.run(editor_cmd, shell=True)
 
