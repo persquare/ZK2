@@ -1,29 +1,28 @@
-import json
-
 import mistune
-from flask import Flask, render_template, request, Markup, send_from_directory
+import flask
 
 import zk2
 
 global zk
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 
 @app.route("/")
 def index():
-    val = request.args.get('filter_value', '')
+    val = flask.request.args.get('filter_value', '')
     zk.rebuild_db()
-    return render_template("index.html", filter_value=val)
+    return flask.render_template("index.html", filter_value=val)
 
 @app.route("/tags")
 def tags():
     tags = zk.tags(mincount=6, sort=True)
-    return render_template("tags.html", tags=tags)
+    return flask.render_template("tags.html", tags=tags)
 
 def _render(note_id, template):
     note = zk.note(note_id)
-    return render_template(template, note=note, body=Markup(mistune.markdown(note['body'])))
+    content = flask.Markup(mistune.markdown(note['body']))
+    return flask.render_template(template, note=note, body=content)
 
 @app.route("/note/<note_id>")
 def note(note_id):
@@ -46,14 +45,14 @@ def archive(note_id):
 @app.route("/query/")
 @app.route("/query/<query_string>")
 def query(query_string=''):
-    key = request.args.get('key', 'date')
-    rev = request.args.get('reversed', 'true') == 'true'
+    key = flask.request.args.get('key', 'date')
+    rev = flask.request.args.get('reversed', 'true') == 'true'
     notes = zk.query(query_string, sort_key=key, reverse=rev)
-    return render_template("item.html", notes=notes)
+    return flask.render_template("item.html", notes=notes)
 
 @app.route("/img/<path:name>")
 def img(name):
-    return send_from_directory(f"{zk.zkdir}/img", name)
+    return flask.send_from_directory(f"{zk.zkdir}/img", name)
 
 
 if __name__ == '__main__':
