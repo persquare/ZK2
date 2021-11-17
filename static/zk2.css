@@ -45,6 +45,19 @@ html, body {
     font: 12px "Trebuchet MS", Helvetica, sans-serif;
 }
 
+.button {
+  border: 1.5px solid #888;
+  border-radius: 3px;
+  color: #444;
+  background-color: transparent;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin: 4px;
+  float:right;
+}
+
 
 div.note_header {
     text-align:left;

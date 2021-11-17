@@ -32,6 +32,12 @@ def note(note_id):
 def peek(note_id):
     return _render(note_id, "peek.html")
 
+@app.route("/new")
+def create():
+    note_id = zk.create()
+    zk.edit(note_id)
+    return ('', 204)
+
 @app.route("/edit/<note_id>")
 def edit(note_id):
     zk.edit(note_id)

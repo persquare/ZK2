@@ -322,6 +322,13 @@ class ZK(object):
         tags = sorted(taglist) if sort else taglist
         return tags
 
+    def create(self, body=''):
+        note = ZKNote()
+        note.write(self.zkdir)
+        # FIXME: Update should suffice...
+        self.load_notes(self.zkdir)
+        return note.id
+
     def edit(self, note_id):
         filepath = self.filepath(note_id)
         editor_cmd = f'{self.config["editor"]} "{filepath}"'

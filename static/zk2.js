@@ -116,6 +116,11 @@ function archive(note_id) {
     get_request("archive/"+note_id, function(){});
 }
 
+function new_note() {
+    get_request("new", function(){});
+}
+
+
 // ================
 // = Peek preview =
 // ================
