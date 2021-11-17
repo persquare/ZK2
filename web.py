@@ -1,6 +1,6 @@
-import mistune
 import flask
 
+import mdproc
 import zk2
 
 global zk
@@ -21,7 +21,7 @@ def tags():
 
 def _render(note_id, template):
     note = zk.note(note_id)
-    content = flask.Markup(mistune.markdown(note['body']))
+    content = flask.Markup(mdproc.render(note['body']))
     return flask.render_template(template, note=note, body=content)
 
 @app.route("/note/<note_id>")
