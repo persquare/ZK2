@@ -1,6 +1,9 @@
 import subprocess
 import shlex
 
+# Process markdown content using the `md_cmd` from `config.py`
+# Fallback to wrapping in <pre> ... </pre> environment if unavailable
+
 try:
     from config import md_cmd
 except:

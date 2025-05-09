@@ -3,8 +3,8 @@ ZK2:
 - date search
 - show search stats
 - Manipulation API
-  - new linked note
-  - split note
+  - new linked note (see tmBundle)
+  - split note (see tmBundle)
   - merge note
 
 tmBundle:
