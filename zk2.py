@@ -75,6 +75,19 @@ Title: {self.title}
 ---
 {self.body}"""
 
+    def fragment(self, prefix):
+        return f"""{prefix}
+---
+Date: {self.date}
+Modified: {self.modified}
+Author: {self.author}
+ID: {self.id}
+Tags: {', '.join(self.tags)}
+Title: {self.title}
+---
+{self.body}
+"""
+
 
     def __getattr__(self, name):
         if name not in ALL_KEYS:
@@ -274,7 +287,7 @@ class ZK(object):
     # FIXME: Combined query expression covering all kinds
     # Argument query is list of (possibly partial) tags
     # Empty list matches everything
-    def filter(self, query):
+    def _filter(self, query):
         if len(query) == 1 and query[0] == 'untagged':
             # Return untagged notes
             r = [n for n in self._notes if not n.tags]
@@ -293,6 +306,10 @@ class ZK(object):
                 else:
                     r.append(n)
         r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        return r
+
+    def filter(self, query):
+        r = self._filter(query)
         return [n._asdict() for n in r]
 
     def search(self, query):
