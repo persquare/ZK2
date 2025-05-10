@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ZK2"
+version = "2.0.0"
+authors = [
+  { name="Per Persson", email="author@example.com" },
+]
+description = "A simple Zettelkasten manager"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/persquare/ZK2"
+Issues = "https://github.com/persquare/ZK2/issues"
