@@ -13,6 +13,7 @@ re_zk_link = re.compile(defs.ZK_LINK_REGEX)
 
 class ZKNote(object):
     """docstring for ZKNote"""
+
     def __init__(self, filepath=None):
         super(ZKNote, self).__init__()
         self.data = {}
@@ -33,7 +34,6 @@ Title: {self.title}
 ---
 {self.body}"""
 
-
     def __getattr__(self, name):
         if name not in defs.ALL_KEYS:
             raise AttributeError("ZKNote has no attribute '{}'".format(name))
@@ -43,19 +43,19 @@ Title: {self.title}
         return self.data
 
     def set_backlinks(self, links):
-        self.data['backlinks'] = links
+        self.data["backlinks"] = links
 
     def filepath(self, zkdir):
         return os.path.join(os.path.expanduser(zkdir), f"zk{self.id}.md")
 
     def read(self, filepath):
-        with open(filepath, 'r', encoding='utf-8') as fd:
+        with open(filepath, "r", encoding="utf-8") as fd:
             self.parse(fd)
 
     def write(self, zkdir):
         filepath = self.filepath(zkdir)
-        with open(filepath, 'w', encoding='utf-8') as fd:
-            print(self, file=fd, end='')
+        with open(filepath, "w", encoding="utf-8") as fd:
+            print(self, file=fd, end="")
 
     def parse(self, file):
         self.parse_header(file)
@@ -68,17 +68,17 @@ Title: {self.title}
         self.data.setdefault(defs.MODIFIED, self.data[defs.DATE])
         self.data.setdefault(defs.TAGS, [])
         self.data.setdefault(defs.AUTHOR, pwd.getpwuid(os.getuid())[4])
-        self.data.setdefault(defs.BODY, '')
+        self.data.setdefault(defs.BODY, "")
         if not self.data.get(defs.TITLE):
             match = re_anfang.match(self.data[defs.BODY])
-            self.data[defs.TITLE] = match.group(1) if match else ''
+            self.data[defs.TITLE] = match.group(1) if match else ""
 
     def parse_body(self, file):
         self.data[defs.BODY] = file.read()
 
     def parse_header(self, file):
         # Skip initial lines
-        header_tag = '---'
+        header_tag = "---"
         line = ""
         while line != header_tag:
             line = file.readline().strip()
@@ -100,7 +100,7 @@ Title: {self.title}
             self.data[key] = datetime.fromisoformat(value)
             return
         if key == defs.TAGS:
-            self.data[key] = [t.strip(' ,') for t in value.split()]
+            self.data[key] = [t.strip(" ,") for t in value.split()]
             return
         self.data[key] = value
 
@@ -109,4 +109,3 @@ Title: {self.title}
             self.tags.remove(defs.ARCHIVED)
         else:
             self.tags.append(defs.ARCHIVED)
-

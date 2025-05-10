@@ -1,7 +1,9 @@
 import os
 import re
+
 # import pwd
 import subprocess
+
 # import shutil
 # from datetime import datetime
 from collections import namedtuple, defaultdict
@@ -38,6 +40,7 @@ from . import definitions as defs
 #
 note_factory = ZKNote
 
+
 def get_config():
     try:
         import config
@@ -47,16 +50,17 @@ def get_config():
     conf = {}
 
     try:
-        conf['notesdir'] = config.notesdir
+        conf["notesdir"] = config.notesdir
     except:
-        conf['notesdir'] = '~/.zk'
+        conf["notesdir"] = "~/.zk"
 
     try:
-        conf['editor'] = config.editor
+        conf["editor"] = config.editor
     except:
-        conf['editor'] = '/usr/bin/nano'
+        conf["editor"] = "/usr/bin/nano"
 
     return conf
+
 
 #
 # ZK class to query note collection
@@ -74,7 +78,7 @@ class ZK(object):
 
     def __init__(self, notesdir=None):
         super(ZK, self).__init__()
-        self.zkdir = os.path.expanduser(notesdir or self.config['notesdir'])
+        self.zkdir = os.path.expanduser(notesdir or self.config["notesdir"])
         self._sort_key = defs.DATE
         # FIXME: Use transient sort_key and sort_reversed
         self._sort_fn = self.sort_options[self._sort_key]
@@ -104,7 +108,6 @@ class ZK(object):
         self._maybe_init_db()
         self.load_notes(self.zkdir)
 
-
     @property
     def sort_key(self):
         return self._sort_key
@@ -122,7 +125,7 @@ class ZK(object):
         for filename in os.listdir(zkdir):
             (name, ext) = os.path.splitext(filename)
             # if ext != '.zk':
-            if ext != '.md' or not name.startswith('zk'):
+            if ext != ".md" or not name.startswith("zk"):
                 continue
             notepath = os.path.join(zkdir, filename)
             yield notepath
@@ -133,10 +136,11 @@ class ZK(object):
         for note in self._notes:
             match = re_zk_link.findall(note.body)
             for m in match:
-                backlinks[m].append({"url":f"zk://{note.id}", "title":f"{note.title}"})
+                backlinks[m].append(
+                    {"url": f"zk://{note.id}", "title": f"{note.title}"}
+                )
         for note in self._notes:
             note.set_backlinks(backlinks.get(f"zk://{note.id}", []))
-
 
     #
     # FIXME: Use generic query_string and combine filter/search/sort into same method
@@ -155,7 +159,7 @@ class ZK(object):
     # Argument query is list of (possibly partial) tags
     # Empty list matches everything
     def _filter(self, query):
-        if len(query) == 1 and query[0] == 'untagged':
+        if len(query) == 1 and query[0] == "untagged":
             # Return untagged notes
             r = [n for n in self._notes if not n.tags]
         else:
@@ -163,7 +167,7 @@ class ZK(object):
             r = []
             for n in self._notes:
                 # Skip notes tagged with ARCHIVED unless ARCHIVED is part of query
-                if (defs.ARCHIVED in n.tags and defs.ARCHIVED not in query):
+                if defs.ARCHIVED in n.tags and defs.ARCHIVED not in query:
                     continue
                 for q in query:
                     if any(t for t in n.tags if t.lower().startswith(q.lower())):
@@ -182,19 +186,23 @@ class ZK(object):
     def search(self, query):
         # Body text search using regexp
         query_re = re.compile(query, re.defs.IGNORECASE)
-        r = [n for n in self._notes if (defs.ARCHIVED not in n.tags) and query_re.search(n.body)]
+        r = [
+            n
+            for n in self._notes
+            if (defs.ARCHIVED not in n.tags) and query_re.search(n.body)
+        ]
         r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
         return [n._asdict() for n in r]
 
     def note(self, note_id):
         for n in self._notes:
-             if n.id == note_id:
-                 return n._asdict()
+            if n.id == note_id:
+                return n._asdict()
 
     def filepath(self, note_id):
         for n in self._notes:
-             if n.id == note_id:
-                 return n.filepath(self.zkdir)
+            if n.id == note_id:
+                return n.filepath(self.zkdir)
 
     def tags(self, mincount, sort=True):
         # Return all tags and corresponding occurence count
@@ -202,11 +210,11 @@ class ZK(object):
         for n in self._notes:
             for t in n.tags:
                 tags[t] = tags.setdefault(t, 0) + 1
-        taglist = [t for t,c in tags.items() if c >= mincount]
+        taglist = [t for t, c in tags.items() if c >= mincount]
         tags = sorted(taglist) if sort else taglist
         return tags
 
-    def create(self, body=''):
+    def create(self, body=""):
         note = ZKNote()
         note.write(self.zkdir)
         # FIXME: Update should suffice...
@@ -226,8 +234,9 @@ class ZK(object):
         note.write(self.zkdir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
+
     print(sys.version)
     note = ZKNote()
     print(note)
@@ -236,8 +245,3 @@ if __name__ == '__main__':
     print(note)
 
     note.write("tests/output")
-
-
-
-
-
