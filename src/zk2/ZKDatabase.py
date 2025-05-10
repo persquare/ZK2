@@ -1,11 +1,6 @@
 import os
 import re
-
-# import pwd
 import subprocess
-
-# import shutil
-# from datetime import datetime
 from collections import namedtuple, defaultdict
 
 from zk2.ZKNote import ZKNote
