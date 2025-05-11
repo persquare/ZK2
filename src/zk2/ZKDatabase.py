@@ -5,7 +5,7 @@ from collections import namedtuple, defaultdict
 
 from zk2.ZKNote import ZKNote
 from . import definitions as defs
-
+from . import config
 
 # File format:
 # 0. Tagline
@@ -35,26 +35,8 @@ from . import definitions as defs
 #
 note_factory = ZKNote
 
+re_zk_link = re.compile(defs.ZK_LINK_REGEX)
 
-def get_config():
-    try:
-        import config
-    except:
-        pass
-
-    conf = {}
-
-    try:
-        conf["notesdir"] = config.notesdir
-    except:
-        conf["notesdir"] = "~/.zk"
-
-    try:
-        conf["editor"] = config.editor
-    except:
-        conf["editor"] = "/usr/bin/nano"
-
-    return conf
 
 
 #
@@ -69,11 +51,11 @@ class ZK(object):
         defs.TITLE: lambda x: x.title,
     }
 
-    config = get_config()
+    # config = get_config()
 
     def __init__(self, notesdir=None):
         super(ZK, self).__init__()
-        self.zkdir = os.path.expanduser(notesdir or self.config["notesdir"])
+        self.zkdir = os.path.expanduser(notesdir or config.conf["notesdir"])
         self._sort_key = defs.DATE
         # FIXME: Use transient sort_key and sort_reversed
         self._sort_fn = self.sort_options[self._sort_key]

@@ -8,7 +8,6 @@ from . import definitions as defs
 
 re_header_entry = re.compile(defs.HEADER_LINE_REGEX)
 re_anfang = re.compile(defs.ANFANG_REGEX)
-re_zk_link = re.compile(defs.ZK_LINK_REGEX)
 
 
 class ZKNote(object):
