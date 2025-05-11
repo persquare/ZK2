@@ -18,6 +18,9 @@ classifiers = [
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
+[project.scripts]
+zk = "zk2.zk_tool:app"
+
 [project.urls]
 Homepage = "https://github.com/persquare/ZK2"
 Issues = "https://github.com/persquare/ZK2/issues"

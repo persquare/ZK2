@@ -22,8 +22,7 @@ def txmt_URI(path):
     uri = f"txmt://open?url=file://{path}&line=7&column=0"
     return uri
 
-if __name__ == '__main__':
-
+def app():
 
     long_desc = """
     Create a zk-note file with some defaults filled in.
@@ -48,7 +47,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    config = zk2.get_config()
+    config = zk2.config
     notesdir = args.notesdir or config['notesdir']
 
     if args.tags:
@@ -70,4 +69,8 @@ if __name__ == '__main__':
         retval = txmt_URI(retval)
     print(retval)
 
+
+
+if __name__ == '__main__':
+    app()
 
