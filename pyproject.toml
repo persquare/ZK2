@@ -3,6 +3,9 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
+dependencies = [
+  "flask",
+]
 name = "ZK2"
 version = "2.0.0"
 authors = [
