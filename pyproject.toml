@@ -23,6 +23,7 @@ license-files = ["LICEN[CS]E*"]
 
 [project.scripts]
 zk = "zk2.zk_tool:app"
+zk-server = "zk2.zk_server:app"
 
 [project.urls]
 Homepage = "https://github.com/persquare/ZK2"
