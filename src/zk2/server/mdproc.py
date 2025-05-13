@@ -5,7 +5,8 @@ import shlex
 # Fallback to wrapping in <pre> ... </pre> environment if unavailable
 
 try:
-    from config import md_cmd
+    from ..config import conf
+    md_cmd = conf["md_cmd"]
 except:
     md_cmd = ''
 
@@ -29,4 +30,3 @@ class Renderer(object):
 
     def _default_process(self, text):
         return f'<pre class="default-pre">\n{text}\n</pre>'
-
