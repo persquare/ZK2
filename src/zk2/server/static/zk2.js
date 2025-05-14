@@ -102,7 +102,7 @@ function mangle_links(element) {
         links[i].addEventListener('click', show_zk, false);
         preview.push(links[i]);
     } else if (re_http.test(url)) {
-        links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
+        // links[i].innerHTML += '<img src="static/if_globe_646196.svg" width="12" height="12" />'
     }
   }
   return preview
