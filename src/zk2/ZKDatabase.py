@@ -36,7 +36,7 @@ from . import config
 note_factory = ZKNote
 
 re_zk_link = re.compile(defs.ZK_LINK_REGEX)
-
+re_query = re.compile(defs.ZK_QUERY_REGEX)
 
 
 #
@@ -119,17 +119,25 @@ class ZK(object):
         for note in self._notes:
             note.set_backlinks(backlinks.get(f"zk://{note.id}", []))
 
-    #
-    # FIXME: Use generic query_string and combine filter/search/sort into same method
-    #
     def query(self, query_string, sort_key=defs.DATE, reverse=True):
         self.sort_key = sort_key
         self.sort_reversed = reverse
-        if query_string.startswith('"'):
-            notes = self.search(query_string.strip('"'))
-        else:
-            notes = self.filter(query_string.split())
-        return notes
+        m = re_query.match(query_string)
+        if not m:
+            return []
+        q_tags = m.group(1).rstrip().split(' ') if m.group(1) else None
+        q_search = m.group(2).strip('"').strip(' ') if m.group(2) else None
+        q_id = m.group(3).lstrip('@').rstrip(' ') if m.group(3) else None
+
+        tag_notes = self._filter(q_tags) if q_tags else self._notes
+        search_notes = self._search(q_search) if q_search else self._notes
+        id_notes = self.id_match(q_id) if q_id else self._notes
+
+        notes = list(set.intersection(set(tag_notes), set(search_notes), set(id_notes)))
+        return [n._asdict() for n in notes]
+
+    def id_match(self, query):
+        return [n for n in self._notes if n.id.startswith(query)]
 
     # Partial match, see https://stackoverflow.com/a/14389112
     # FIXME: Combined query expression covering all kinds
@@ -160,15 +168,20 @@ class ZK(object):
         r = self._filter(query)
         return [n._asdict() for n in r]
 
-    def search(self, query):
+    def _search(self, query):
         # Body text search using regexp
-        query_re = re.compile(query, re.defs.IGNORECASE)
+        query_re = re.compile(query, re.IGNORECASE)
         r = [
             n
             for n in self._notes
             if (defs.ARCHIVED not in n.tags) and query_re.search(n.body)
         ]
         r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        return r
+
+    def search(self, query):
+        # Body text search using regexp
+        r = self._search(query)
         return [n._asdict() for n in r]
 
     def note(self, note_id):
@@ -200,7 +213,7 @@ class ZK(object):
 
     def edit(self, note_id):
         filepath = self.filepath(note_id)
-        editor_cmd = f'{self.config["editor"]} "{filepath}"'
+        editor_cmd = f'{config.conf["editor"]} "{filepath}"'
         # os.environ['TM_TAGS']=",".join(self.tags(mincount=1))
         subprocess.run(editor_cmd, shell=True)
 
