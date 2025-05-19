@@ -43,12 +43,19 @@ def app():
                         help='Return current tag set in space separated list')
 
     parser.add_argument('--notesdir', default=None, type=str,
-                        help="Directory of ZK notes")
+                        help="Override directory of ZK notes set in config")
+
+    parser.add_argument('--dir', action="store_true",
+                        help="Return default directory of ZK notes set in config")
 
     args = parser.parse_args()
 
     config = zk2.config
     notesdir = args.notesdir or config['notesdir']
+
+    if args.dir:
+        print(os.path.expanduser(notesdir))
+        sys.exit(0)
 
     if args.tags:
         db = zk2.ZK(notesdir=notesdir)
