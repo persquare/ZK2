@@ -17,15 +17,16 @@ function filter() {
 }
 
 function drag(event) {
-    var note_title = event.target.innerHTML;
-    var note_id = event.target.parentElement.id;
-    var content = "zk://"+note_id+" \""+note_title.trim()+"\"";
+    var anfang = event.target.getElementsByClassName("anfang")[0]
+    var note_title = anfang.innerHTML.trim();
+    var note_id = event.target.id;
+    var content = "["+note_title+"](zk://"+note_id+")";
     if (event.altKey) {
-        content = "["+note_title.trim()+"](zk://"+note_id+")";
+        // FIXME: Make this a reflink and put ref on pasteboard
+        content = "[FIXME]: zk://"+note_id+" \""+note_title+"\"";
     }
-    event.dataTransfer.setData("text", content);
+    event.dataTransfer.setData("text/plain", content);
 }
-
 
 // ======================
 // = Core functionality =
