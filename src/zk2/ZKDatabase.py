@@ -91,7 +91,7 @@ class ZK(object):
         except KeyError:
             self.sort_key = defs.DATE
 
-    def all_notes(self, zkdir):
+    def all_note_files(self, zkdir):
         for filename in os.listdir(zkdir):
             (name, ext) = os.path.splitext(filename)
             # if ext != '.zk':
@@ -101,7 +101,7 @@ class ZK(object):
             yield notepath
 
     def load_notes(self, zkdir):
-        self._notes = [note_factory(note) for note in self.all_notes(zkdir)]
+        self._notes = [note_factory(note) for note in self.all_note_files(zkdir)]
         backlinks = defaultdict(list)
         for note in self._notes:
             match = re_zk_link.findall(note.body)
@@ -122,9 +122,9 @@ class ZK(object):
         q_search = m.group(2).strip('"').strip(' ') if m.group(2) else None
         q_id = m.group(3).lstrip('@').rstrip(' ') if m.group(3) else None
 
-        tag_notes = self._filter(q_tags) if q_tags else self._notes # FIXME: exclude archived
-        search_notes = self._search(q_search) if q_search else self._notes
-        id_notes = self.id_match(q_id) if q_id else self._notes
+        tag_notes = self._filter(q_tags)
+        search_notes = self._search(q_search) if q_search else tag_notes
+        id_notes = self.id_match(q_id) if q_id else tag_notes
 
         return list(set.intersection(set(tag_notes), set(search_notes), set(id_notes)))
 
@@ -135,8 +135,10 @@ class ZK(object):
     # FIXME: Combined query expression covering all kinds
     # Argument query is list of (possibly partial) tags
     # Empty list matches everything
-    def _filter(self, query):
-        if len(query) == 1 and query[0] == "untagged":
+    def _filter(self, tags):
+        if not tags:
+            return [n for n in self._notes if defs.ARCHIVED not in n.tags]
+        elif len(tags) == 1 and tags[0] == "untagged":
             # Return untagged notes
             r = [n for n in self._notes if not n.tags]
         else:
@@ -144,16 +146,15 @@ class ZK(object):
             r = []
             for n in self._notes:
                 # Skip notes tagged with ARCHIVED unless ARCHIVED is part of query
-                if defs.ARCHIVED in n.tags and defs.ARCHIVED not in query:
+                if defs.ARCHIVED in n.tags and defs.ARCHIVED not in tags:
                     continue
-                for q in query:
+                for q in tags:
                     if any(t for t in n.tags if t.lower().startswith(q.lower())):
                         continue
                     else:
                         break
                 else:
                     r.append(n)
-        r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
         return r
 
     def filter(self, query):
@@ -163,12 +164,7 @@ class ZK(object):
     def _search(self, query):
         # Body text search using regexp
         query_re = re.compile(query, re.IGNORECASE)
-        r = [
-            n
-            for n in self._notes
-            if (defs.ARCHIVED not in n.tags) and query_re.search(n.body)
-        ]
-        r = sorted(r, key=self._sort_fn, reverse=self.sort_reversed)
+        r = [n for n in self._notes if query_re.search(n.body)]
         return r
 
     def search(self, query):
@@ -235,6 +231,17 @@ class ZK(object):
         note = ZKNote(filepath)
         note.toggle_archived()
         note.write(self.zkdir)
+
+    def purge_empty_archived(self):
+        notes = self.execute_query("archived", sort_key=defs.DATE, reverse=True)
+        purged = []
+        for n in notes:
+            if n.body.strip() == "":
+                filepath = self.filepath(n.id)
+                if os.path.exists(filepath):
+                    purged.append(f"purging: {filepath}")
+                    os.remove(filepath)
+        return purged
 
 
 if __name__ == "__main__":
