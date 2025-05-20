@@ -51,8 +51,6 @@ class ZK(object):
         defs.TITLE: lambda x: x.title,
     }
 
-    # config = get_config()
-
     def __init__(self, notesdir=None):
         super(ZK, self).__init__()
         self.zkdir = os.path.expanduser(notesdir or config.conf["notesdir"])
@@ -79,11 +77,6 @@ class ZK(object):
             pass
         if not os.listdir(self.zkdir):
             self._welcome_note()
-
-    def rebuild_db(self):
-        self._notes = []
-        self._maybe_init_db()
-        self.load_notes(self.zkdir)
 
     @property
     def sort_key(self):
@@ -119,7 +112,7 @@ class ZK(object):
         for note in self._notes:
             note.set_backlinks(backlinks.get(f"zk://{note.id}", []))
 
-    def query(self, query_string, sort_key=defs.DATE, reverse=True):
+    def execute_query(self, query_string, sort_key, reverse):
         self.sort_key = sort_key
         self.sort_reversed = reverse
         m = re_query.match(query_string)
@@ -129,12 +122,11 @@ class ZK(object):
         q_search = m.group(2).strip('"').strip(' ') if m.group(2) else None
         q_id = m.group(3).lstrip('@').rstrip(' ') if m.group(3) else None
 
-        tag_notes = self._filter(q_tags) if q_tags else self._notes
+        tag_notes = self._filter(q_tags) if q_tags else self._notes # FIXME: exclude archived
         search_notes = self._search(q_search) if q_search else self._notes
         id_notes = self.id_match(q_id) if q_id else self._notes
 
-        notes = list(set.intersection(set(tag_notes), set(search_notes), set(id_notes)))
-        return [n._asdict() for n in notes]
+        return list(set.intersection(set(tag_notes), set(search_notes), set(id_notes)))
 
     def id_match(self, query):
         return [n for n in self._notes if n.id.startswith(query)]
@@ -184,16 +176,34 @@ class ZK(object):
         r = self._search(query)
         return [n._asdict() for n in r]
 
-    def note(self, note_id):
-        for n in self._notes:
-            if n.id == note_id:
-                return n._asdict()
-
     def filepath(self, note_id):
         for n in self._notes:
             if n.id == note_id:
                 return n.filepath(self.zkdir)
 
+
+    #
+    # API
+    #
+
+    # Called by server
+    def rebuild_db(self):
+        self._notes = []
+        self._maybe_init_db()
+        self.load_notes(self.zkdir)
+
+    # Called by server
+    def query(self, query_string, sort_key=defs.DATE, reverse=True):
+        notes = self.execute_query(query_string, sort_key, reverse)
+        return [n._asdict() for n in sorted(notes, key=self._sort_fn, reverse=self.sort_reversed)]
+
+    # Called by server
+    def note(self, note_id):
+        for n in self._notes:
+            if n.id == note_id:
+                return n._asdict()
+
+    # Called by server
     def tags(self, mincount, sort=True):
         # Return all tags and corresponding occurence count
         tags = {}
@@ -204,19 +214,22 @@ class ZK(object):
         tags = sorted(taglist) if sort else taglist
         return tags
 
+    # Called by server
     def create(self, body=""):
         note = ZKNote()
+        note.body = body
         note.write(self.zkdir)
         # FIXME: Update should suffice...
         self.load_notes(self.zkdir)
         return note.id
 
+    # Called by server
     def edit(self, note_id):
         filepath = self.filepath(note_id)
         editor_cmd = f'{config.conf["editor"]} "{filepath}"'
-        # os.environ['TM_TAGS']=",".join(self.tags(mincount=1))
         subprocess.run(editor_cmd, shell=True)
 
+    # Called by server
     def archive(self, note_id):
         filepath = self.filepath(note_id)
         note = ZKNote(filepath)
