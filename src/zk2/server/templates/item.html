@@ -1,6 +1,6 @@
 {% for note in notes %}
-<a href="#" class="item" onclick="show_note({{note.id}}); return false;" id="{{note.id}}">
-<div class="anfang" draggable="true" ondragstart="drag(event)">
+<a href="#" class="item" onclick="show_note({{note.id}}); return false;" id="{{note.id}}" draggable="true" ondragstart="drag(event)">
+<div class="anfang">
     {{note.title}}
 </div>
 <div class="tags">
