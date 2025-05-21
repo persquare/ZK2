@@ -5,7 +5,7 @@ import zk2
 
 from . import mdproc
 
-def create_app(test_config=None):
+def create_app():
     app = flask.Flask(__name__, instance_relative_config=True)
 
     zk = zk2.ZK()
@@ -65,29 +65,3 @@ def create_app(test_config=None):
 
     return app
 
-# if __name__ == '__main__':
-#
-#    import argparse
-#
-#
-#    long_desc = """
-#    Serve a ZK "database"
-#    """
-#
-#    parser = argparse.ArgumentParser(description=long_desc)
-#
-#    parser.add_argument('--debug', action="store_true", default=False,
-#                        help='Run Flask server with debug option')
-#
-#    parser.add_argument('--notesdir', default=None, type=str,
-#                        help="Directory of ZK notes")
-#
-#    parser.add_argument('--port', default=9075,
-#                        help='Port to serve on')
-#
-#    args = parser.parse_args()
-#
-#    global zk
-#
-#    zk = zk2.ZK(notesdir=args.notesdir)
-#    app.run(debug = args.debug, port=args.port)

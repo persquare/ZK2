@@ -10,7 +10,7 @@ except:
 
 conf = {
     "notesdir": _conf.get("notesdir", "~/.zk"),
-    "editor": _conf.get("editor", "/usr/bin/nano"),
+    "editor": _conf.get("editor", "open -e"),
     "md_cmd": _conf.get("md_cmd", ""),
 }
 

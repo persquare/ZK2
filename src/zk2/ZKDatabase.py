@@ -64,9 +64,11 @@ class ZK(object):
         welcome = ZKNote()
         welcome.data[defs.TITLE] = "Welcome!"
         welcome.data[defs.TAGS] = ["howto", "workflow"]
-        # with open('../../README.md') as fd:
-        #     body = fd.read()
-        body = "Hello world!"
+        body = "Error locating README"
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        # FIXME: Fragile
+        with open(this_dir + '/../../README.md') as fd:
+            body = fd.read()
         welcome.data[defs.BODY] = body
         welcome.write(self.zkdir)
 
@@ -112,9 +114,7 @@ class ZK(object):
         for note in self._notes:
             note.set_backlinks(backlinks.get(f"zk://{note.id}", []))
 
-    def execute_query(self, query_string, sort_key, reverse):
-        self.sort_key = sort_key
-        self.sort_reversed = reverse
+    def execute_query(self, query_string):
         m = re_query.match(query_string)
         if not m:
             return []
@@ -190,7 +190,9 @@ class ZK(object):
 
     # Called by server
     def query(self, query_string, sort_key=defs.DATE, reverse=True):
-        notes = self.execute_query(query_string, sort_key, reverse)
+        self.sort_key = sort_key
+        self.sort_reversed = reverse
+        notes = self.execute_query(query_string)
         return [n._asdict() for n in sorted(notes, key=self._sort_fn, reverse=self.sort_reversed)]
 
     # Called by server

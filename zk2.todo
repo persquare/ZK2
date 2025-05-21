@@ -1,18 +1,27 @@
+Server:
+- configurable syntax css 
+- tmcsv -> syntax css
+
 ZK2:
+x Fix timestamp
 - reload db
-- date search
++ date search
 - show search stats
-- Manipulation API
-  - new linked note (see tmBundle)
-  - split note (see tmBundle)
-  - merge note
++ Manipulation API
+  + new linked note (see tmBundle)
+  x split note (see tmBundle)
+  x merge notes
 
 tmBundle:
-  - Update modified on save
+  + Update modified on save
   - Use API to implement
-    - split note
-    - merge note
-    - new linked note
+    x split note
+    x merge note
+    + new linked note
+    + new note
+    + archive note
+    x Archive => Delete if empty body (return boolean status)
+    + purge archive and empty
   - grammar
     Simplest way to achieve this is to require Markdown (Front matter) bundle
     - require Markdown (Front matter)
