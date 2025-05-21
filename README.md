@@ -58,7 +58,7 @@ Below is a template `~/.zk_config` (toml format) that you can copy and edit:
 #
 # Markdown rendering
 # If no md_cmd given, all note text is rendered in a <pre></pre> environment
-# Rederer must accept markdown text on stdin and produce HTML on stdout
+# Renderer must accept markdown text on stdin and produce HTML on stdout
 # NB. An absolute path is required, and paths with spaces need to be doubly quoted:
 #   md_cmd = "~/bin/markdown" -- WRONG (relative path)
 #   md_cmd = "/Users/me/my tools/markdown" -- WRONG (spaces in path)
@@ -79,7 +79,7 @@ TextMate has a dedicated ZK bundle, see <https://github.com/persquare/Zettelkast
 
 ### LaunchAgent <a name="launchagent"></a>
 
-`~//Library/LaunchAgents/com.github.persquare.zk2.plist`:
+`~/Library/LaunchAgents/com.github.persquare.zk2.plist`:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -119,7 +119,7 @@ You can edit the current note by clicking the document-and-pen icon.
 You can narrow the items listed in the note list by using the tag cloud or the search bar.
 
 ### Quick filtering (tag cloud)
-By clicking a tag in the tag cloud the list is reduced to those items tagged with that tag. Not that the tag cloud is initially empty as a tag doesn't show up until until it is present in 6 notes (configurable FIXME).
+By clicking a tag in the tag cloud the list is reduced to those items tagged with that tag. Note that the tag cloud is initially empty as a tag doesn't show up until until it is present in at least six notes (configurable FIXME).
 
 ### Filter and search (search bar)
 You can filter the notes by tags (`foo bar ...`) or by id (`@1407`), or perform a free text (`"yadda yadda`) search.
