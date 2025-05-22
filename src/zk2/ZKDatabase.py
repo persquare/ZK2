@@ -238,7 +238,7 @@ class ZK(object):
         note.write(self.zkdir)
 
     def purge_empty_archived(self):
-        notes = self.execute_query("archived", sort_key=defs.DATE, reverse=True)
+        notes = self.execute_query(defs.ARCHIVED)
         purged = []
         for n in notes:
             if n.body.strip() == "":
