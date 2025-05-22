@@ -209,6 +209,8 @@ class ZK(object):
         # Return all tags and corresponding occurence count
         tags = {}
         for n in self._notes:
+            if defs.ARCHIVED in n.tags:
+                continue
             for t in n.tags:
                 tags[t] = tags.setdefault(t, 0) + 1
         taglist = [t for t, c in tags.items() if c >= mincount]
