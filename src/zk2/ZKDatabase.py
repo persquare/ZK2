@@ -178,6 +178,11 @@ class ZK(object):
                 return n.filepath(self.zkdir)
 
 
+    def _note(self, note_id):
+        for n in self._notes:
+            if n.id == note_id:
+                return n
+
     #
     # API
     #
@@ -197,9 +202,7 @@ class ZK(object):
 
     # Called by server
     def note(self, note_id):
-        for n in self._notes:
-            if n.id == note_id:
-                return n._asdict()
+        return self._note(note_id)._asdict()
 
     # Called by server
     def tags(self, mincount, sort=True):
