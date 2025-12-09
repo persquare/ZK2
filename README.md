@@ -68,7 +68,7 @@ Below is a template `~/.zk_config` (toml format) that you can copy and edit:
 # md_cmd = "/usr/local/bin/markdown"
 # md_cmd = "/usr/local/bin/pandoc -f markdown -t html"
 # md_cmd = "/Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py"
-
+``
 ```
 
 TextMate has a dedicated ZK bundle, see <https://github.com/persquare/Zettelkasten.tmbundle>

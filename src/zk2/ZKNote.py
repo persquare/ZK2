@@ -227,3 +227,15 @@ Title: {self.title}
             self.tags.remove(defs.ARCHIVED)
         else:
             self.tags.append(defs.ARCHIVED)
+
+    def rename_tag(self, old_name, new_name):
+        """
+        Rename a tag on this note.
+
+        If the 'old_name' tag is not present, do nothing.
+        """
+        if old_name in self.tags:
+            self.tags.remove(old_name)
+            self.tags.append(new_name)
+            return new_name
+

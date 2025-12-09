@@ -250,6 +250,11 @@ class ZK(object):
                     os.remove(filepath)
         return purged
 
+    def rename_tag(self, old_name, new_name):
+        for n in self._notes:
+            tag = n.rename_tag(old_name, new_name)
+            if tag:
+                n.write(self.zkdir)
 
 if __name__ == "__main__":
     import sys

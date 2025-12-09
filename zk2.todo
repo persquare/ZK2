@@ -11,6 +11,9 @@ x Fix timestamp
   + new linked note (see tmBundle)
   x split note (see tmBundle)
   x merge notes
+- the ZK read/write is inelegant, with the latter requiring a base location
+  - make read/write operate on notdir, and introduce read_from/write_to
+- Better introduction in README, stress plain text and files
 
 tmBundle:
   + Update modified on save
